@@ -1,0 +1,75 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{2020PhRvR...2b3068B}
+{Burns}, K.J., {Vasil}, G.M., {Oishi}, J.S., {Lecoanet}, D., {Brown}, B.P.: {Dedalus: A flexible framework for numerical simulations with spectral methods}. Physical Review Research  \textbf{2}(2), 023068 (Apr 2020). \doi{10.1103/PhysRevResearch.2.023068}
+
+\bibitem{Ermentrout2010}
+Ermentrout, G.B., Terman, D.H.: Mathematical Foundations of Neuroscience. Springer (2010)
+
+\bibitem{fabiani2025enabling}
+Fabiani, G., Vandecasteele, H., Goswami, S., Siettos, C., Kevrekidis, I.G.: Enabling local neural operators to perform equation-free system-level analysis. arXiv preprint arXiv:2505.02308  (2025)
+
+\bibitem{ferrara2023fairness}
+Ferrara, E.: Fairness and bias in artificial intelligence: A brief survey of sources, impacts, and mitigation strategies. Sci  \textbf{6}(1), ~3 (2023)
+
+\bibitem{FitzHugh1961}
+FitzHugh, R.: Impulses and physiological states in theoretical models of nerve membrane. Biophysical Journal  \textbf{1}(6),  445--466 (1961)
+
+\bibitem{hao2024fourier}
+Hao, Y., Song, F.: Fourier neural operator networks for solving reaction--diffusion equations. Fluids  \textbf{9}(11), ~258 (2024)
+
+\bibitem{Izhikevich2007}
+Izhikevich, E.M.: Dynamical Systems in Neuroscience: The Geometry of Excitability and Bursting. MIT Press (2007)
+
+\bibitem{Keener2009}
+Keener, J., Sneyd, J.: Mathematical Physiology. Springer (2009)
+
+\bibitem{Kilgore2014}
+Kilgore, K.L., Bhadra, N.: Reversible nerve conduction block using kilohertz frequency alternating current. Neuromodulation: Technology at the Neural Interface  \textbf{17}(3),  242--254 (2014)
+
+\bibitem{korkmaz2024artificial}
+Korkmaz, S.: Artificial intelligence in healthcare: a revolutionary ally or an ethical dilemma? Balkan Medical Journal  \textbf{41}(2),  87--88 (2024)
+
+\bibitem{kovachki2021neural}
+Kovachki, N.B., Li, Z., Liu, B., Azizzadenesheli, K., Bhattacharya, K., Stuart, A.M., Anandkumar, A.: Neural operator: Learning maps between function spaces. CoRR  \textbf{abs/2108.08481} (2021)
+
+\bibitem{LeVeque2007}
+LeVeque, R.J.: Finite Difference Methods for Ordinary and Partial Differential Equations: Steady-State and Time-Dependent Problems. SIAM (2007)
+
+\bibitem{li2021fourierneuraloperatorparametric}
+Li, Z., Kovachki, N., Azizzadenesheli, K., Liu, B., Bhattacharya, K., Stuart, A., Anandkumar, A.: Fourier neural operator for parametric partial differential equations (2021), \url{https://arxiv.org/abs/2010.08895}
+
+\bibitem{li2023physicsinformedneuraloperatorlearning}
+Li, Z., Zheng, H., Kovachki, N., Jin, D., Chen, H., Liu, B., Azizzadenesheli, K., Anandkumar, A.: Physics-informed neural operator for learning partial differential equations (2023), \url{https://arxiv.org/abs/2111.03794}
+
+\bibitem{liu2024multi}
+Liu, X.Y., Zhu, M., Lu, L., Sun, H., Wang, J.X.: Multi-resolution partial differential equations preserved learning framework for spatiotemporal dynamics. Communications Physics  \textbf{7}(1), ~31 (2024)
+
+\bibitem{loshchilov2019decoupled}
+Loshchilov, I., Hutter, F.: Decoupled weight decay regularization. In: International Conference on Learning Representations (ICLR) (2019), \url{https://openreview.net/forum?id=Bkg6RiCqY7}
+
+\bibitem{lu2021learning}
+Lu, L., Jin, P., Pang, G., Zhang, Z., Karniadakis, G.E.: Learning nonlinear operators via {DeepONet} based on the universal approximation theorem of operators. Nature Machine Intelligence  \textbf{3}(3),  218--229 (2021)
+
+\bibitem{Nagumo1962}
+Nagumo, J., Arimoto, S., Yoshizawa, S.: An active pulse transmission line simulating nerve axon. Proceedings of the IRE  \textbf{50}(10),  2061--2070 (1962)
+
+\bibitem{patterson2022carbonfootprintmachinelearning}
+Patterson, D., Gonzalez, J., Hölzle, U., Le, Q., Liang, C., Munguia, L.M., Rothchild, D., So, D., Texier, M., Dean, J.: The carbon footprint of machine learning training will plateau, then shrink (2022), \url{https://arxiv.org/abs/2204.05149}
+
+\bibitem{film2018}
+Perez, E., Strub, F., de~Vries, H., Dumoulin, V., Courville, A.: {FiLM}: Visual reasoning with a general conditioning layer. In: AAAI Conference on Artificial Intelligence (2018), \url{https://arxiv.org/abs/1709.07871}
+
+\bibitem{Quarteroni2000}
+Quarteroni, A., Sacco, R., Saleri, F.: Numerical Mathematics. Springer (2000)
+
+\bibitem{Rinzel1998}
+Rinzel, J., Ermentrout, G.B.: Analysis of neural excitability and oscillations. In: Methods in Neuronal Modeling, pp. 251--291. MIT Press (1998)
+
+\bibitem{Terman1992}
+Terman, D.: The transition from bursting to continuous spiking in excitable membrane models. Journal of Nonlinear Science  \textbf{2}(2),  135--182 (1992). \doi{10.1007/BF02429854}
+
+\end{thebibliography}
