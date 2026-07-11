@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex camera_ready_fhn_fno"] 1783288158 "camera_ready_fhn_fno.aux" "camera_ready_fhn_fno.bbl" "camera_ready_fhn_fno" 1783288160 0
-  "./references.bib" 1783276029 7539 fa8964564f1c27634342d6957bc870d9 ""
+["bibtex camera_ready_fhn_fno"] 1783743462 "camera_ready_fhn_fno.aux" "camera_ready_fhn_fno.bbl" "camera_ready_fhn_fno" 1783743529 0
+  "./references.bib" 1783724616 7925 39156a766be78ec41a07df9c69dd2d5b ""
   "./splncs04.bst" 1698918984 32146 aadf770ded437d161532035219ea6f45 ""
-  "camera_ready_fhn_fno.aux" 1783288160 22338 ee362ca410c6f5d37786a19170100e06 "pdflatex"
+  "camera_ready_fhn_fno.aux" 1783743529 22303 748f809cfc5348ca34142931ffe1a4e7 "pdflatex"
   (generated)
   "camera_ready_fhn_fno.bbl"
   "camera_ready_fhn_fno.blg"
   (rewritten before read)
-["pdflatex"] 1783288158 "/Users/1amaj/Documents/MY RESEARCH/FHN-paper/IJCAI-camera-ready/camera_ready_fhn_fno.tex" "camera_ready_fhn_fno.pdf" "camera_ready_fhn_fno" 1783288160 0
-  "/Users/1amaj/Documents/MY RESEARCH/FHN-paper/IJCAI-camera-ready/camera_ready_fhn_fno.tex" 1783288156 47541 45631f076758f304ae29bf33e2b097d0 ""
+["pdflatex"] 1783743527 "/Users/1amaj/Documents/MY RESEARCH/FHN-paper/IJCAI-camera-ready/camera_ready_fhn_fno.tex" "camera_ready_fhn_fno.pdf" "camera_ready_fhn_fno" 1783743529 0
+  "/Users/1amaj/Documents/MY RESEARCH/FHN-paper/IJCAI-camera-ready/camera_ready_fhn_fno.tex" 1783743527 51142 e4e0e58ee52df113ca71b9447ea1ea08 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2023/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1136768653 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -173,10 +173,10 @@
   "/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1693413990 4623355 b8cad38412faebe1ce5b780a45db67bd ""
   "/usr/local/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1693413948 7883451 66fe613fdb0f04c78c5bb75deefed975 ""
   "/usr/local/texlive/2023/texmf.cnf" 1678822455 577 1b2b1af17af2508fb20dd85783af4050 ""
-  "camera_ready_fhn_fno.aux" 1783288160 22338 ee362ca410c6f5d37786a19170100e06 "pdflatex"
-  "camera_ready_fhn_fno.bbl" 1783288158 4506 fa9856b2df5de70fe8da38daa9b858b6 "bibtex camera_ready_fhn_fno"
-  "camera_ready_fhn_fno.out" 1783288160 629 a450d095955cdbc4578221ccab698272 "pdflatex"
-  "camera_ready_fhn_fno.tex" 1783288156 47541 45631f076758f304ae29bf33e2b097d0 ""
+  "camera_ready_fhn_fno.aux" 1783743529 22303 748f809cfc5348ca34142931ffe1a4e7 "pdflatex"
+  "camera_ready_fhn_fno.bbl" 1783743462 4753 f5d0ff30257145ba04a97daad70a676f "bibtex camera_ready_fhn_fno"
+  "camera_ready_fhn_fno.out" 1783743529 629 a450d095955cdbc4578221ccab698272 "pdflatex"
+  "camera_ready_fhn_fno.tex" 1783743527 51142 e4e0e58ee52df113ca71b9447ea1ea08 ""
   "figures/bifurcation_two_regime.png" 1783276017 99759 b05973f1d263d1c6606b4c6ca1c2d7c6 ""
   "figures/excitable_all_or_none.png" 1783276017 48104 1e213a1c55b1f6d62374daf9b42a10cd ""
   "figures/excitable_conduction_velocity.png" 1783276017 43092 07749e7ba03863ce9cfaa06548f53a06 ""

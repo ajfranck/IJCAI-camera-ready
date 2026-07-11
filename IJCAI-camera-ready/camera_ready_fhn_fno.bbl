@@ -51,6 +51,9 @@ Liu, X.Y., Zhu, M., Lu, L., Sun, H., Wang, J.X.: Multi-resolution partial differ
 \bibitem{loshchilov2019decoupled}
 Loshchilov, I., Hutter, F.: Decoupled weight decay regularization. In: International Conference on Learning Representations (ICLR) (2019), \url{https://openreview.net/forum?id=Bkg6RiCqY7}
 
+\bibitem{lu2021learning}
+Lu, L., Jin, P., Pang, G., Zhang, Z., Karniadakis, G.E.: Learning nonlinear operators via {DeepONet} based on the universal approximation theorem of operators. Nature Machine Intelligence  \textbf{3}(3),  218--229 (2021)
+
 \bibitem{Nagumo1962}
 Nagumo, J., Arimoto, S., Yoshizawa, S.: An active pulse transmission line simulating nerve axon. Proceedings of the IRE  \textbf{50}(10),  2061--2070 (1962)
 

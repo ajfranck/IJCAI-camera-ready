@@ -77,6 +77,14 @@
 % %
 % %
 
+% usage: \fixme[comments describing issue]{text to be fixed}
+% define \fixme as not doing anything special
+\newcommand{\fixme}[2][]{#2}
+% overwrite it so it shows up as red
+\renewcommand{\fixme}[2][]{\textcolor{red}{#2}}
+\renewcommand{\fixme}[2][]{\textcolor{red}{#2\footnote{#1}}}
+% overwrite it again to show as footnote
+
 \title{Fast Surrogate Modeling of Excitable and Oscillatory FitzHugh-Nagumo Dynamics with Parametric Neural Operators}
 
 \titlerunning{FitzHugh-Nagumo Dynamics with Parametric Neural Operators}
@@ -95,17 +103,16 @@
 
 
 \begin{abstract}
-The FitzHugh-Nagumo (FHN) system serves as a simplified model of neuronal voltage dynamics, capturing the activator-inhibitor structure behind both isolated action potentials and the rhythmic spiking seen across the brain. Exploring its 5D physiological parameter space is important for neuromodulation and mapping voltage recordings back to biophysics, yet classical finite-difference solvers make rapid parameter sweeps expensive. We train parameter-conditioned Fourier Neural Operators (FNOs) as fast, differentiable surrogates for the FHN voltage and recovery fields, conditioning each Fourier layer on the parameter vector $\bm{\lambda} = (D_u, D_v, a, b, \tau)$ via feature-wise linear modulation (FiLM). We apply a single bifurcation analysis that delimits the two distinct regimes the model spans, oscillatory (tonic firing) and excitable (action-potential propagation), and we train one operator in each. In the oscillatory regime the surrogate attains sub-$0.1\%$ relative $L^2$ error on both fields, runs nearly three orders of magnitude faster than the finite-difference baseline, generalizes uniformly across the parameter space, and extrapolates to low single-digit percentage errors outside of the training bounds. In the excitable regime the same operator accurately reproduces the firing threshold and the $c \propto \sqrt{D_u}$ conduction-velocity law and replicates full traveling pulses, fully capturing the excitable bifurcation structure rather than just smoothly interpolating fields.
+The FitzHugh-Nagumo (FHN) system serves as a simplified model of neuronal voltage dynamics, capturing the activator-inhibitor structure behind both isolated action potentials and the rhythmic spiking seen across the brain. Exploring its 5D physiological parameter space is important for neuromodulation and mapping voltage recordings back to biophysics, yet classical finite-difference solvers make rapid parameter sweeps expensive. We train parameter-conditioned Fourier Neural Operators (FNOs) as fast, differentiable surrogates for the FHN voltage and recovery fields on a one-dimensional spatial domain, conditioning each Fourier layer on the parameter vector $\bm{\lambda} = (D_u, D_v, a, b, \tau)$ via feature-wise linear modulation (FiLM). We apply a single bifurcation analysis that delimits the two distinct regimes the model spans, oscillatory (tonic firing) and excitable (action-potential propagation), and we train one operator in each. In the oscillatory regime the surrogate attains sub-$0.1\%$ relative $L^2$ error on both fields, runs nearly three orders of magnitude faster than the finite-difference baseline, generalizes uniformly across the parameter space, and extrapolates to low single-digit percentage errors outside of the training bounds. In the excitable regime the same operator accurately reproduces the firing threshold and the $c \propto \sqrt{D_u}$ conduction-velocity law and replicates full traveling pulses, fully capturing the excitable bifurcation structure rather than just smoothly interpolating fields.
 
 \keywords{FitzHugh-Nagumo model \and Excitable media \and Fourier Neural Operators \and Operator learning \and Parametric PDEs \and FiLM conditioning \and Bifurcation analysis \and Neuromodulation}
 \end{abstract}
 
 \section{Introduction}
 
-Much of the brain's signaling is shaped by two coupled processes inside each neuron: a fast change in membrane voltage that produces an action potential, and a slower recovery current that resets the cell~\cite{Izhikevich2007,Ermentrout2010}. The FitzHugh-Nagumo (FHN) reaction-diffusion system~\cite{FitzHugh1961,Nagumo1962} reduces these dynamics into two coupled equations for membrane voltage and recovery, and remains a widely used reduced model of neural excitation by capturing both single action-potential propagation and the rhythmic spiking that dominates many human-brain signals. Connecting noisy voltage recordings back to the parameters of such a model is important for neural decoding, inverse modeling, and closed-loop neuromodulation. These are all tasks that demand many fast, differentiable forward solves, which traditional finite-difference or spectral methods~\cite{Ermentrout2010,2020PhRvR...2b3068B} cannot provide because they require fine discretization and become prohibitive over large parameter sweeps. 
+Much of the brain's signaling is shaped by two coupled processes inside each neuron: a fast change in membrane voltage that produces an action potential, and a slower recovery current that resets the cell~\cite{Izhikevich2007,Ermentrout2010}. The FitzHugh-Nagumo (FHN) reaction-diffusion system~\cite{FitzHugh1961,Nagumo1962} reduces these dynamics into two coupled equations for membrane voltage and recovery, and remains a widely used reduced model of neural excitation by capturing both single action-potential propagation and the rhythmic spiking that dominates many human-brain signals. Connecting noisy voltage recordings back to the parameters of such a model is important for neural decoding, inverse modeling, and closed-loop neuromodulation.
 
-%
-For parametric PDEs, the cost of classical solvers grows quickly with the parameter space, since each new parameter combination requires a full re-simulation. This makes tasks such as optimization infeasible, and motivates fast learned surrogates. Neural Operators (NOs)~\cite{kovachki2021neural} learn mappings between infinite-dimensional function spaces, capturing the solution operator itself rather than a discretization, and Fourier Neural Operators (FNOs)~\cite{li2021fourierneuraloperatorparametric} are particularly effective for PDEs by performing their convolutions in the frequency domain.
+These are all tasks that demand many fast, differentiable forward solves, which traditional finite-difference or spectral methods~\cite{Ermentrout2010,2020PhRvR...2b3068B} cannot provide because they require fine discretization and become prohibitive over large parameter sweeps. For parametric PDEs, the cost of classical solvers grows quickly with the parameter space, since each new parameter combination requires a full re-simulation. This makes tasks such as inverse parameter inference (fitting $\bm{\lambda}$ to a voltage recording) and stimulus optimization for closed-loop control challenging, and motivates fast learned surrogates. Neural Operators (NOs)~\cite{kovachki2021neural} learn mappings between infinite-dimensional function spaces, capturing the solution operator itself rather than a discretization, and Fourier Neural Operators (FNOs)~\cite{li2021fourierneuraloperatorparametric} are particularly effective for PDEs by performing their convolutions in the frequency domain.
 %
 \subsection*{Contributions:}
 \begin{itemize}
@@ -113,17 +120,18 @@ For parametric PDEs, the cost of classical solvers grows quickly with the parame
     \item A bifurcation analysis of the ODE shows that the sampled parameter ranges sit clearly in the oscillatory and excitable regimes of firing neurons.
     \item We characterize parameter-wise error sensitivity across the 5D space, and demonstrate relatively uniform generalization, with $|\rho| < 0.36$ for all parameter-error correlations.
     \item We quantify extrapolation behavior outside the training ranges and identify diffusion magnitude as the primary failure mode, while the surrogate extrapolates accurately along the reaction and time-scale axes.
-    \item Within the training parameter range, the surrogate holds sub-$0.1\%$ relative $L^2$ error on both fields while running nearly three orders of magnitude faster than the finite-difference baseline. This enables near real-time FHN simulation for downstream neuroscience workloads such as inverse parameter inference and closed-loop stimulation.
+    \item Within the training parameter range, the surrogate holds sub-$0.1\%$ relative $L^2$ error on both fields while running nearly three orders of magnitude faster than the finite-difference baseline. This positions the surrogate as a fast, differentiable forward model for downstream neuroscience workloads such as inverse parameter inference and closed-loop stimulation, which we motivate and set up but leave to future work.
     \item We show the same FiLM-conditioned operator extends to the excitable (action-potential) regime, where it reproduces the all-or-none firing threshold and the $c \propto \sqrt{D_u}$ conduction-velocity scaling and replicates full traveling action potentials over $100$-step rollouts.
 \end{itemize}
 
+Throughout, we restrict attention to a single spatial dimension. The study is 1D, we leave the extension of the surrogate to the 2D/3D domains to future work.
 
-\section{Prior and Related Work}
+\section{Related Work}
 
 The FitzHugh-Nagumo model has traditionally been studied with numerical methods such as finite difference methods, finite element methods, and spectral methods \cite{Quarteroni2000,LeVeque2007}. These approaches discretize the spatial domain into grids or elements and then iteratively solve the resulting equations. These methods are accurate but require fine spatial and temporal discretization, making large parameter sweeps computationally expensive.
 
 %
-However, a parallel line of work has also studied learned surrogates. Neural operators~\cite{kovachki2021neural} learn mappings between function spaces, and the Fourier Neural Operator~\cite{li2021fourierneuraloperatorparametric} demonstrates this with spectral convolutions. Extensions include physics-informed neural operators~\cite{li2023physicsinformedneuraloperatorlearning}, multi-resolution methods~\cite{liu2024multi}, and equation-free local operators~\cite{fabiani2025enabling}.
+One solution to this problem is to use machine-learned surrogate models instead.  Neural operators~\cite{kovachki2021neural} learn mappings between function spaces, and the Fourier Neural Operator~\cite{li2021fourierneuraloperatorparametric} demonstrates this with spectral convolutions. Extensions include physics-informed neural operators~\cite{li2023physicsinformedneuraloperatorlearning}, multi-resolution methods~\cite{liu2024multi}, and equation-free local operators~\cite{fabiani2025enabling}.
 
 %
 \subsection{FNOs for Reaction-Diffusion Systems}
@@ -140,25 +148,7 @@ The FitzHugh-Nagumo (FHN) system models neuronal voltage and recovery dynamics t
 \frac{\partial v}{\partial t} &= D_v \nabla^2 v + \frac{1}{\tau}(u + a - b v), \label{eq:fhn_v}
 \end{align}
 
-\noindent where $u(\bm{x},t)$ is the membrane voltage, $v(\bm{x},t)$ is the recovery variable that gates the slow current, $\bm{x} \in \Omega \subseteq \mathbb{R}^1$ is the spatial coordinate, and $t \in [0,T]$ is time. The parameter vector $\bm{\lambda} = (D_u, D_v, a, b, \tau) \in \mathbb{R}^5$ characterizes the system, where $D_u, D_v > 0$ are diffusion coefficients and $(a, b, \tau)$ control the reaction kinetics. Different combinations of $\bm{\lambda}$ place the system in qualitatively distinct dynamical regimes. We make this structure explicit in \Cref{sec:bifurcation}.
-
-\subsection{Dynamical Regimes of FHN}
-\label{sec:bifurcation}
-
-To verify that the surrogate is trained on meaningful dynamics, we analyze the spatially-homogeneous reduction of \eqref{eq:fhn_u}--\eqref{eq:fhn_v}. One fixed point satisfies $u^\star - (u^\star)^3/3 = v^\star$ and $u^\star + a = b v^\star$, which yields the cubic $b (u^\star)^3 - 3(b-1) u^\star + 3 a = 0$. Each real root gives one fixed point, and its linear Jacobian
-\begin{equation}
-J = \begin{pmatrix} 1 - (u^\star)^2 & -1 \\ 1/\tau & -b/\tau \end{pmatrix}
-\end{equation}
-classifies the local flow. The regime is excitable when there is a single fixed point with $\mathrm{tr}\,J < 0$ and $\det J > 0$ (which is a stable rest state), oscillatory when there is a single fixed point with $\mathrm{tr}\,J > 0$, which is an unstable focus surrounded by a limit cycle. It is bistable when there are three real fixed points.
-
-\Cref{fig:bifurcation} maps these regimes on the $(a, b)$ plane at the median training $\tau$ and overlays the two parameter boxes the paper models. The first surrogate's box (\Cref{sec:data_generation}) clearly sits in the oscillatory region: a finer sweep over $\tau \in [1, 20]$ confirms $100\%$ of the sampled cube is oscillatory, so the surrogate is trained specifically on limit-cycle neurons firing tonically rather than a dormant rest state. These same criteria place the box of the excitable surrogate (\Cref{sec:excitable_results}, $|u^\star| > 1$) entirely in the stable-rest region. Thus, a single analysis defines both dynamical regimes the paper models.
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=\columnwidth]{figures/bifurcation_two_regime.png}
-\caption{Dynamical-regime map of the spatially-homogeneous FHN ODE at the median training $\tau = 10.5$. Green: excitable (stable rest state). Orange: oscillatory (limit cycle, tonic firing). Purple: bistable. The black rectangle is the oscillatory training box and the blue rectangle is the excitable training box. It is visually very clear, and supported by a sweep across the full $\tau$ range, that both boxes lie entirely within their respective regimes.}
-\label{fig:bifurcation}
-\end{figure}
+\noindent where $u(\bm{x},t)$ is the membrane voltage, $v(\bm{x},t)$ is the recovery variable that gates the slow current, $\bm{x} \in \Omega \subseteq \mathbb{R}^1$ is the spatial coordinate, and $t \in [0,T]$ is time. The parameter vector $\bm{\lambda} = (D_u, D_v, a, b, \tau) \in \mathbb{R}^5$ characterizes the system, where $D_u, D_v > 0$ are diffusion coefficients and $(a, b, \tau)$ control the reaction kinetics. Different combinations of $\bm{\lambda}$ place the system in qualitatively distinct dynamical regimes---principally the \emph{oscillatory} (tonic-firing) and \emph{excitable} (single action-potential) regimes this paper models. Before generating data, we verify via the bifurcation analysis of \Cref{sec:bifurcation} that each sampled parameter box lies cleanly inside its intended regime.
 
 \subsection{Learning Parametric Solution Operators with FNOs}
 
@@ -181,12 +171,12 @@ We consider the challenge of learning nonlinear parametric operators $\mathcal{G
 
 The Fourier Neural Operator~\cite{li2021fourierneuraloperatorparametric} approximates the solution operator $\mathcal{G}_{\bm{\lambda}}$ through a neural network $\mathcal{G}_{\bm{\theta}, \bm{\lambda}}$, where $\bm{\theta}$ denotes the learnable weights. The architecture consists of three main components:
 
-\noindent\textbf{1. Lifting:} An initial projection $\mathcal{P}: \mathbb{R}^{d_{\text{in}}} \rightarrow \mathbb{R}^w$ maps the input channels (here $d_{\text{in}} = 2$ for $(u,v)$) to a higher-dimensional representation of width $w$:
+\textbf{1. Lifting:} An initial projection $\mathcal{P}: \mathbb{R}^{d_{\text{in}}} \rightarrow \mathbb{R}^w$ maps the input channels (here $d_{\text{in}} = 2$ for $(u,v)$) to a higher-dimensional representation of width $w$:
 \begin{equation}
     \bm{z}_0(\bm{x}) = \mathcal{P}(\bm{u}_0(\bm{x})).
 \end{equation}
 
-\noindent\textbf{2. Fourier Layers:} The core of the FNO consists of $L$ Fourier layers. Each layer $\ell \in \{1, \ldots, L\}$ applies a convolution and then a nonlinearity:
+\textbf{2. Fourier Layers:} The core of the FNO consists of $L$ Fourier layers. Each layer $\ell \in \{1, \ldots, L\}$ applies a convolution and then a nonlinearity:
 \begin{equation}
     \bm{z}_{\ell}(\bm{x}) = \sigma\left(\mathcal{K}_{\ell}[\bm{z}_{\ell-1}](\bm{x}) + \mathcal{W}_{\ell}(\bm{z}_{\ell-1}(\bm{x}))\right),
     \label{eq:fourier_layer}
@@ -200,7 +190,7 @@ The convolution $\mathcal{K}_{\ell}$ operates by transforming to the frequency d
 \end{equation}
 where $\mathcal{F}$ and $\mathcal{F}^{-1}$ are the Fourier transform and its inverse, while $\bm{R}_{\ell} \in \mathbb{C}^{w \times w \times k_{\max}}$ are learnable weights~\cite{li2021fourierneuraloperatorparametric}.
 
-\noindent\textbf{3. Projection:} A projection $\mathcal{Q}: \mathbb{R}^w \rightarrow \mathbb{R}^{d_{\text{out}}}$ maps from the hidden dimension back to the output space ($d_{\text{out}} = 2$ for $(u,v)$):
+\textbf{3. Projection:} A projection $\mathcal{Q}: \mathbb{R}^w \rightarrow \mathbb{R}^{d_{\text{out}}}$ maps from the hidden dimension back to the output space ($d_{\text{out}} = 2$ for $(u,v)$):
 \begin{equation}
     \bm{u}_{\Delta t}(\bm{x}) = \mathcal{Q}(\bm{z}_L(\bm{x})).
 \end{equation}
@@ -218,6 +208,24 @@ $\bm{\theta}$ is optimized using AdamW with learning rate scheduling~\cite{loshc
 \FloatBarrier
 \section{Implementation}
 \label{sec:implementation}
+
+\subsection{Dynamical Regimes and Parameter-Box Placement}
+\label{sec:bifurcation}
+
+To verify that the surrogate is trained on meaningful dynamics, we analyze the spatially-homogeneous reduction of \eqref{eq:fhn_u}--\eqref{eq:fhn_v}. One fixed point satisfies $u^\star - (u^\star)^3/3 = v^\star$ and $u^\star + a = b v^\star$, which yields the cubic $b (u^\star)^3 - 3(b-1) u^\star + 3 a = 0$. Each real root gives one fixed point, and its linear Jacobian
+\begin{equation}
+J = \begin{pmatrix} 1 - (u^\star)^2 & -1 \\ 1/\tau & -b/\tau \end{pmatrix}
+\end{equation}
+classifies the local flow. The regime is excitable when there is a single fixed point with $\mathrm{tr}\,J < 0$ and $\det J > 0$ (a stable rest state), and oscillatory when there is a single fixed point with $\mathrm{tr}\,J > 0$ and $\det J > 0$, an unstable focus surrounded by a limit cycle. It is bistable when there are three real fixed points.
+
+\Cref{fig:bifurcation} maps these regimes on the $(a, b)$ plane at the median training $\tau$ and overlays the two parameter boxes this paper models. The first surrogate's box (\Cref{sec:data_generation}) clearly sits in the oscillatory region: a finer sweep over $\tau \in [1, 20]$ confirms $100\%$ of the sampled cube is oscillatory, so the surrogate is trained specifically on limit-cycle neurons firing tonically rather than a dormant rest state. These same criteria place the box of the excitable surrogate (\Cref{sec:excitable_results}, $|u^\star| > 1$) entirely in the stable-rest region. Thus, a single analysis defines both dynamical regimes this paper models.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\columnwidth]{figures/bifurcation_two_regime.png}
+\caption{Dynamical-regime map of the spatially-homogeneous FHN ODE at the median training $\tau = 10.5$. Green: excitable (stable rest state). Orange: oscillatory (limit cycle, tonic firing). Purple: bistable. The black rectangle is the oscillatory training box and the blue rectangle is the excitable training box. It is visually very clear, and supported by a sweep across the full $\tau$ range, that both boxes lie entirely within their respective regimes.}
+\label{fig:bifurcation}
+\end{figure}
 
 \subsection{Data Generation}
 \label{sec:data_generation}
@@ -244,7 +252,7 @@ All five parameters are sampled uniformly from physiologically motivated ranges~
 \subsubsection{Dataset Specifications}
 \label{sec:dataset_specs}
 
-The primary dataset has $N = 8000$ trajectories on a periodic domain $\Omega = [0, 1]$ with $n_x = 256$ points, each evolved to $T = 1.0$ at $\Delta t = 0.01$ with $n_{\text{save}} = 50$ saved snapshots ($\alpha = 2.0$ GRF initial conditions). This yields 50 single-step pairs $(u_t, v_t) \rightarrow (u_{t+\Delta t}, v_{t+\Delta t})$ per trajectory under an 80-20 trajectory-level split (6{,}400 train / 1{,}600 validation). The excitable-regime experiments (\Cref{sec:excitable_results}) use a separately generated dataset on a longer domain $L = 8$, with $N = 1{,}250$ trajectories ($1{,}000$ train / $250$ validation), $T = 40$, $\Delta t = 0.02$, and $n_{\text{save}} = 100$, and localized super-threshold Gaussian-bump perturbations of the rest state as initial conditions rather than $\alpha = 2.0$ GRF fields.
+The primary dataset has $N = 8000$ trajectories on a periodic domain $\Omega = [0, 1]$ with $n_x = 256$ points, each evolved to $T = 1.0$ at $\Delta t = 0.01$ with $n_{\text{save}} = 50$ saved snapshots ($\alpha = 2.0$ GRF initial conditions). This yields 50 single-step pairs $(u_t, v_t) \rightarrow (u_{t+\Delta t}, v_{t+\Delta t})$ per trajectory under an 80-20 trajectory-level split (6{,}400 train / 1{,}600 validation) used for training and model selection. All final oscillatory-regime metrics in \Cref{sec:results} are instead reported on a separately generated, identically distributed held-out test set of $1{,}600$ trajectories, disjoint from both the training and validation data and unseen during training and hyperparameter selection. The excitable-regime experiments (\Cref{sec:excitable_results}) use a separately generated dataset on a longer domain $L = 8$, with $N = 1{,}250$ trajectories ($1{,}000$ train / $250$ validation), $T = 40$, $\Delta t = 0.02$, and $n_{\text{save}} = 100$, and localized super-threshold Gaussian-bump perturbations of the rest state as initial conditions rather than $\alpha = 2.0$ GRF fields.
 
 
 \subsection{Model Architecture}
@@ -278,7 +286,7 @@ where $\beta_{\text{global}}$ is a learnable scalar initialized to 0.1. It allow
 
 Each of the $L = 6$ Fourier layers computes the real FFT $\tilde{\bm{z}} = \text{rfft}(\bm{z}_{\ell-1})$, retains only the first $k_{\max} = 16$ modes (we zero the rest which acts as an implicit low-pass filter). At the same time a pointwise $1\times1$ convolution captures local features, and the two pathways are summed and passed through GELU: $\bm{z}_{\text{pre}} = \text{GELU}(\bm{z}_{\text{spectral}} + \text{Conv1D}_{64}(\bm{z}_{\ell-1}))$.
 
-\paragraph{Choosing $k_{\max}{=}16$.} The diffusive terms $D_u \nabla^2 u$ and $D_v \nabla^2 v$ damp Fourier mode $k$ at a rate proportional to $k^2$, so even sharp FHN spikes concentrate their energy in the lowest few wavenumbers. An ablation over $k_{\max} \in \{4, 8, 16, 32, 64\}$ on the full 8000-trajectory dataset (\Cref{fig:kmax_ablation}) shows validation rel-$L^2$ improving $\sim 4{\times}$ from $k_{\max}=4$ to $k_{\max}=16$ and then plateauing, with $k_{\max}=64$ statistically indistinguishable from $k_{\max}=16$ while using $3.4{\times}$ more parameters. We also note that although $k_{\max}=32$ has a slightly better error score, the $k_{\max}=16$ model is more stable during autoregressive rollouts, which is the ultimate use case for the surrogate. Thus, we choose $k_{\max} = 16$ as a sweet spot.
+\paragraph{Choosing $k_{\max}{=}16$.} The diffusive terms $D_u \nabla^2 u$ and $D_v \nabla^2 v$ damp Fourier mode $k$ at a rate proportional to $k^2$, so even sharp FHN spikes concentrate their energy in the lowest few wavenumbers. An ablation over $k_{\max} \in \{4, 8, 16, 32, 64\}$ on the full 8000-trajectory dataset (\Cref{fig:kmax_ablation}) shows validation rel-$L^2$ improving $\sim 4{\times}$ from $k_{\max}=4$ to $k_{\max}=16$ and then plateauing, with $k_{\max}=64$ statistically indistinguishable from $k_{\max}=16$ while using $3.4{\times}$ more parameters. We also note that although $k_{\max}=32$ has a slightly better error score, the $k_{\max}=16$ model is more stable during autoregressive rollouts, which is the ultimate use case for the surrogate. Thus, we choose $k_{\max} = 16$ as a sweet spot. We ablate only $k_{\max}$, the axis the diffusive spectrum makes most interpretable. The hidden width $w = 64$ and depth $L = 6$ were fixed to standard FNO values~\cite{li2021fourierneuraloperatorparametric} that already reach sub-$0.1\%$ error and were not tuned further, so a fuller width/depth sweep remains future work.
 
 \begin{figure}[!ht]
 \centering
@@ -343,12 +351,12 @@ Training pairs $(\bm{u}_t, \bm{u}_{t+\Delta t})$ are drawn from trajectories wit
 \section{Results}
 \label{sec:results}
 
-Our analysis proceeds in stages. We first assess single-step prediction accuracy on held-out validation data, then the error correlation for each parameter, then long-time autoregressive rollout performance, and then the computational efficiency gains relative to traditional finite-difference solvers. We finally turn to generalization beyond the training ranges and to a complementary excitable regime in which the operator reproduces excitable-media phenomena. Unless noted otherwise, results are reported on the validation set consisting of 1,600 trajectories with parameter combinations and initial conditions not seen during training.
+Our evaluation builds a case in the order a downstream user would care about, with each stage answering a distinct question about the surrogate as a forward model. We first establishsingle-step accuracy (is one operator application faithful?), then a per-parameter error breakdown (is that accuracy uniform across the 5D space?), then long-horizon autoregressive rollout (does error stay bounded when the operator is iterated, i.e. the actual use case?), then computational efficiency and finally generalization outside the training ranges and transfer to the excitable regime. Unless stated otherwise, the results in this section concern the oscillatory (tonic-firing) regime; the complementary excitable regime is treated separately in \Cref{sec:excitable_results}. Model and hyperparameter selection (e.g.\ the $k_{\max}$ ablation of \Cref{sec:fourier_layer_design}) used the validation split, whereas all errors reported here are computed on the disjoint held-out test set of $1{,}600$ trajectories described in \Cref{sec:dataset_specs}, whose parameter combinations and initial conditions were unseen during training and selection.
 
 \subsection{Single-Step Prediction Accuracy}
 \label{sec:single_step_results}
 
-We begin by evaluating the FNO's ability to predict single time steps. Table~\ref{tab:single_step_metrics} summarizes the quantitative performance metrics averaged over the entire validation set.
+We begin by evaluating the FNO's ability to predict single time steps. Table~\ref{tab:single_step_metrics} summarizes the quantitative performance metrics averaged over the entire test set.
 
 \begin{table}[!ht]
 \centering
@@ -368,7 +376,7 @@ Max AE & $0.178$ & $0.309$ \\
 \end{sc}
 \end{small}
 \smallskip
-\caption{Single-step prediction accuracy on the held-out validation set ($N_{\text{test}} = 1600$ trajectories, $n_x = 256$ spatial points), in normalized space. Values are 5-seed means (per-trajectory mean for relative $L^2$, element-wise averages otherwise). Per-seed variability is reported in \Cref{tab:baselines}.}
+\caption{Single-step prediction accuracy on the held-out test set ($N_{\text{test}} = 1600$ trajectories, $n_x = 256$ spatial points), in normalized space. Values are 5-seed means (per-trajectory mean for relative $L^2$, element-wise averages otherwise). Per-seed variability is reported in \Cref{tab:baselines}.}
 \label{tab:single_step_metrics}
 \end{table}
 
@@ -402,7 +410,7 @@ Param. FNO
 \end{scriptsize}
 \end{center}
 \smallskip
-\caption{Baseline comparison on the validation set ($N_{\text{test}} = 1600$
+\caption{Baseline comparison on the test set ($N_{\text{test}} = 1600$
 trajectories, $n_x = 256$). All error values are mean $\pm$ standard deviation
 across $n_{\text{seeds}} = 5$ independent training runs, reported in units of
 $10^{-3}$. ``Baseline FNO'' uses the identical backbone (width 64, 16 modes,
@@ -416,14 +424,14 @@ The parametric FNO predicts single time steps with sub-$0.1\%$ relative $L^2$ er
 
 Mean absolute errors ($4.1 \times 10^{-4}$ for $u$, $5.9 \times 10^{-4}$ for $v$) and mean squared errors ($3.0 \times 10^{-6}$, $9.0 \times 10^{-6}$) are physically negligible, and the largest pointwise deviations of max absolute error $0.18$ for $u$ and $0.31$ for $v$ are confined to sharp wavefronts, leaving the total metrics almost entirely unaffected.
 
-\noindent\textbf{Baseline comparison.} Table~\ref{tab:baselines} compares two natural baselines. DeepONet is far worse: its relative $L^2$ error is roughly $58\times$ higher on $u$ and $50\times$ higher on $v$. The channel-broadcast FNO is more competitive but still performs worse than the FiLM-conditioned model by roughly $30\%$ on both fields, while still containing $26\%$ more parameters ($0.63$M vs $0.50$M). FiLM conditioning therefore improves accuracy and reduces model size relative to broadcasting $\bm{\lambda}$ as constant channels, so the gain comes from how parameters are added rather than from added capacity.
+\noindent\textbf{Baseline comparison.} Table~\ref{tab:baselines} compares two natural baselines. DeepONet~\cite{lu2021learning}, a branch--trunk operator-learning architecture that encodes the input field and the query coordinates through separate subnetworks, is far worse here: its relative $L^2$ error is roughly $58\times$ higher on $u$ and $50\times$ higher on $v$. The channel-broadcast FNO is more competitive but still performs worse than the FiLM-conditioned model by roughly $30\%$ on both fields, while still containing $26\%$ more parameters ($0.63$M vs $0.50$M). FiLM conditioning therefore improves accuracy and reduces model size relative to broadcasting $\bm{\lambda}$ as constant channels, so the gain comes from how parameters are added rather than from added capacity.
 
-Qualitative single-step predictions across weakly, moderately, and strongly diffusive regimes are visually indistinguishable from ground truth (\Cref{fig:single_step_comparison}). The per-regime single-step MAE ranges from $5 \times 10^{-5}$ to $2 \times 10^{-4}$, with the weakly diffusive case being the hardest.
+Qualitative single-step predictions across weakly, moderately, and strongly diffusive regimes are visually indistinguishable from ground truth (\Cref{fig:single_step_comparison}). The per-regime single-step MAE ranges from $5 \times 10^{-5}$ to $2 \times 10^{-4}$, with the weakly diffusive case having the largest errors, consistent with the diffusion-driven failure mode of \Cref{sec:extrapolation_results}. It notes that weaker diffusion leaves sharper wavefronts that are truncated by the $k_{\max}{=}16$ spectral filter.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=\columnwidth]{figures/single_step_regimes.png}
-\caption{Single-step prediction across three representative validation regimes (rows: weakly, moderately, strongly diffusive). Left: ground truth vs predicted $u$. Center: ground truth vs predicted $v$. Right: absolute error in $u$ and $v$ (scaled for visibility). Predicted and true profiles are visually indistinguishable.}
+\caption{Single-step prediction across three representative test regimes (rows: weakly, moderately, strongly diffusive). Left: ground truth vs predicted $u$. Center: ground truth vs predicted $v$. Right: absolute error in $u$ and $v$ (scaled for visibility). Predicted and true profiles are visually indistinguishable.}
 \label{fig:single_step_comparison}
 \end{figure}
 
@@ -432,7 +440,7 @@ Qualitative single-step predictions across weakly, moderately, and strongly diff
 \label{sec:parameter_generalization}
 
 
-It's important to note that a single averaged error can hide some behavior: a surrogate may look accurate overall while failing along one axis of the parameter space. Because the coordinates of $\bm{\lambda}$ correspond to distinct ODE bifurcations, the axes where error concentrates carry physical meaning and indicate where to add data augmentation. Table~\ref{tab:parameter_correlation} reports Pearson correlations between each FHN parameter and the relative $L^2$ error for both $u$ and $v$.
+It's important to note that a single averaged error can hide some behavior: a surrogate may look accurate overall while failing along one axis of the parameter space. Because the coordinates of $\bm{\lambda}$ correspond to distinct ODE bifurcations, the axes where error concentrates carry physical meaning and indicate where to add data augmentation. Thus, we relate the error to each axis of $\bm{\lambda}$ individually so we can determine whether any single parameter drives accuracy. We note that the Pearson $\rho$ used here captures only linear/monotonic dependence, so a purely nonlinear sensitivity could go undetected. Table~\ref{tab:parameter_correlation} reports Pearson correlations between each FHN parameter and the relative $L^2$ error for both $u$ and $v$.
 
 
 \begin{table}[!ht]
@@ -451,11 +459,11 @@ $v$ error & $-0.166$ & $+0.114$ & $+0.025$ & $-0.027$ & $-0.357$ \\
 \end{small}
 \end{center}
 \smallskip
-\caption{Pearson correlation between each FHN parameter and the per-trajectory single-step relative $L^2$ error on the validation set. All $|\rho| < 0.36$, indicating relatively uniform generalization across the five-dimensional parameter space.}
+\caption{Pearson correlation between each FHN parameter and the per-trajectory single-step relative $L^2$ error on the test set. All $|\rho| < 0.36$, indicating relatively uniform generalization across the five-dimensional parameter space.}
 \label{tab:parameter_correlation}
 \end{table}
 
-All coefficients have $|\rho| < 0.36$ which indicates relatively uniform accuracy. Contrary to expectation that the faster activator would be more sensitive, $u$ is nearly parameter-agnostic: its strongest correlation is a weak $\rho = +0.143$ with $D_u$, and every other coefficient is under $|\rho| \le 0.06$. The variation that exists is concentrated in the inhibitor $v$, whose dominant axis is the time-scale $\tau$, with $\rho = -0.357$. This is physically sensible, since $\tau$ sets the relaxation rate of the slow recovery variable. The negative sign means $v$ is predicted slightly more accurately at larger $\tau$, where its dynamics are smoother. The reaction parameters $a$ and $b$ are basically uncorrelated with the error on both fields, with $|\rho| \le 0.05$.
+The largest correlation magnitude anywhere in \Cref{tab:parameter_correlation} is $|\rho| = 0.357$ (the $\tau$--$v$ term), so every coefficient falls below $0.36$, which indicates relatively uniform accuracy. Contrary to expectation that the faster activator would be more sensitive, $u$ is nearly parameter-agnostic: its strongest correlation is a weak $\rho = +0.143$ with $D_u$, and every other coefficient is under $|\rho| \le 0.06$. The variation that exists is concentrated in the inhibitor $v$, whose dominant axis is the time-scale $\tau$, with $\rho = -0.357$. This is physically sensible, since $\tau$ sets the relaxation rate of the slow recovery variable. The negative sign means $v$ is predicted slightly more accurately at larger $\tau$, where its dynamics are smoother. The reaction parameters $a$ and $b$ are basically uncorrelated with the error on both fields, with $|\rho| \le 0.05$.
 
 Error thus concentrates along the time-scale axis rather than the reaction axes, but even there the dependence is moderate. This relatively uniform structure indicates that random parameter sampling sufficed to cover the space, and the within-range trend that higher $\tau$ is easier is consistent with the time-scale extrapolation shown next.
 
@@ -515,7 +523,7 @@ We evaluate the FNO on parameters outside the training ranges to determine its e
 \toprule
 Parameter Regime & $\epsilon_{\text{rel}}(u)$ & $\epsilon_{\text{rel}}(v)$ \\
 \midrule
-Within range (validation) & $0.0006655$ & $0.0008012$ \\
+Within range (test) & $0.0006655$ & $0.0008012$ \\
 Low diffusion ($D_u{=}0.005$, $D_v{=}0.002$) & $0.007085$ & $0.008089$ \\
 High diffusion ($D_u{=}0.15$, $D_v{=}0.08$) & $0.03401$ & $0.01635$ \\
 High time-scale separation ($\tau{=}30$) & $0.0005277$ & $0.001066$ \\
@@ -588,9 +596,11 @@ Both excitable-media signatures match the solver (\Cref{fig:excitable_signatures
 \label{fig:excitable_rollout}
 \end{figure}
 
-\paragraph{Outlook: conduction-block design.}
+\subsection*{Limitations and Future Work}
 \label{sec:outlook}
-A future goal is signal-based conduction blocking: finding a stimulus $I_{\text{ext}}(\bm{x}, t)$ that halts action-potential propagation, the basis of kHz nerve block~\cite{Kilgore2014}. Because the FNO is differentiable in $\bm{\lambda}$ and its inputs, these signals are a gradient-descent target. Differentiating throughout the rollout, we obtain the search direction in one backward pass, while the numerical solver requires a separate integration for every possible solution. Since the FiLM conditioning already spans the parameter family, a candidate signal can also be stress-tested for robustness across $\bm{\lambda}$, moving our surrogate toward equation-free and system-level neuromodulation design~\cite{fabiani2025enabling}.
+Several limitations bound the present study and set up its natural extensions. First, all experiments are one-dimensional; we leave 2D/3D geometries for future work. Second, extrapolation degrades primarily along the diffusion axis (\Cref{sec:extrapolation_results}), where sharp wavefronts push energy past the spectral truncation. Third, the parameter-sensitivity screen of \Cref{sec:parameter_generalization} is linear and could miss nonlinear dependencies.
+
+Most importantly, the differentiable surrogate is meant to enable downstream inverse and control tasks that we motivate. A concrete target is signal-based conduction blocking: finding a stimulus $I_{\text{ext}}(\bm{x}, t)$ that halts action-potential propagation, the basis of kHz nerve block~\cite{Kilgore2014}. We establish two prerequisites for this. (i)~A differentiable, accurate forward surrogate: because the FNO is differentiable in $\bm{\lambda}$ and its inputs, such a stimulus becomes a gradient-descent target, with the search direction obtained in a single backward pass through the rollout, whereas the numerical solver requires a separate integration for every candidate. (ii)~Parameter robustness: since the FiLM conditioning already spans the parameter family, a candidate signal can be stress-tested for robustness across $\bm{\lambda}$. Demonstrating an actual recovered-parameter or optimized-stimulus result is the natural next step, moving the surrogate toward equation-free, system-level neuromodulation design~\cite{fabiani2025enabling}.
 
 \FloatBarrier
 \section*{Ethical Statement}

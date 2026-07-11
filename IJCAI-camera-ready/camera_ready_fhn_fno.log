@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.30)  5 JUL 2026 14:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.30)  10 JUL 2026 21:18
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -569,78 +569,77 @@ Package hyperref Info: Link coloring OFF on input line 41.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 95.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 103.
  (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 95.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 103.
  (/usr/local/texlive/2023/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 95.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 103.
  (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 100.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 108.
  (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 ) [1
 
-{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}]
-Overfull \hbox (6.75348pt too wide) in paragraph at lines 131--132
+{/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2]
+Overfull \hbox (6.75348pt too wide) in paragraph at lines 139--140
 \T1/ptm/m/n/10 The clos-est prior work, Hao and Song [[]], ap-plies FNOs to the Sur-face Quasi-Geostrophic
  []
 
-[2]
-<figures/bifurcation_two_regime.png, id=94, 412.6617pt x 311.2428pt>
+[3] [4]
+<figures/bifurcation_two_regime.png, id=131, 412.6617pt x 311.2428pt>
 File: figures/bifurcation_two_regime.png Graphic file (type png)
 <use figures/bifurcation_two_regime.png>
-Package pdftex.def Info: figures/bifurcation_two_regime.png  used on input line 158.
+Package pdftex.def Info: figures/bifurcation_two_regime.png  used on input line 225.
 (pdftex.def)             Requested size: 347.12354pt x 261.81259pt.
- [3] [4 <./figures/bifurcation_two_regime.png>] [5] [6]
-<figures/kmax_ablation.png, id=181, 564.4287pt x 223.3143pt>
+ [5] [6 <./figures/bifurcation_two_regime.png>] [7]
+<figures/kmax_ablation.png, id=197, 564.4287pt x 223.3143pt>
 File: figures/kmax_ablation.png Graphic file (type png)
 <use figures/kmax_ablation.png>
-Package pdftex.def Info: figures/kmax_ablation.png  used on input line 285.
+Package pdftex.def Info: figures/kmax_ablation.png  used on input line 293.
 (pdftex.def)             Requested size: 347.12354pt x 137.34258pt.
- [7] [8 <./figures/kmax_ablation.png>] [9]
-<figures/single_step_regimes.png, id=226, 2654.91875pt x 2970.09625pt>
-File: figures/single_step_regimes.png Graphic file (type png)
-<use figures/single_step_regimes.png>
-Package pdftex.def Info: figures/single_step_regimes.png  used on input line 425.
-(pdftex.def)             Requested size: 347.12354pt x 388.30142pt.
-
-Overfull \hbox (8.38719pt too wide) in paragraph at lines 458--459
-\T1/ptm/m/n/10 trary to ex-pec-ta-tion that the faster ac-ti-va-tor would be more sen-si-tive, $\OML/cmm/m/it/10 u$ \T1/ptm/m/n/10 is nearly parameter-
+ [8 <./figures/kmax_ablation.png>] [9] [10]
+Overfull \hbox (7.52324pt too wide) in paragraph at lines 427--428
+\T1/ptm/b/n/10 Baseline com-par-i-son. \T1/ptm/m/n/10 Ta-ble []3[] com-pares two nat-u-ral base-lines. Deep-ONet [[]], a branch--
  []
 
-[10] [11 <./figures/single_step_regimes.png>]
-<figures/phase_portraits.png, id=244, 1077.7866pt x 354.123pt>
+<figures/single_step_regimes.png, id=243, 2654.91875pt x 2970.09625pt>
+File: figures/single_step_regimes.png Graphic file (type png)
+<use figures/single_step_regimes.png>
+Package pdftex.def Info: figures/single_step_regimes.png  used on input line 433.
+(pdftex.def)             Requested size: 347.12354pt x 388.30142pt.
+[11] [12 <./figures/single_step_regimes.png>]
+<figures/phase_portraits.png, id=260, 1077.7866pt x 354.123pt>
 File: figures/phase_portraits.png Graphic file (type png)
 <use figures/phase_portraits.png>
-Package pdftex.def Info: figures/phase_portraits.png  used on input line 473.
+Package pdftex.def Info: figures/phase_portraits.png  used on input line 481.
 (pdftex.def)             Requested size: 347.12354pt x 114.05113pt.
- [12] [13 <./figures/phase_portraits.png>]
-Overfull \hbox (6.56342pt too wide) in paragraph at lines 538--539
+ [13 <./figures/phase_portraits.png>] [14]
+Overfull \hbox (6.56342pt too wide) in paragraph at lines 546--547
 \T1/ptm/m/n/10 ever $\OMS/cmsy/m/n/10 j\OML/cmm/m/it/10 u[]\OMS/cmsy/m/n/10 j \OML/cmm/m/it/10 > \OT1/cmr/m/n/10 1$\T1/ptm/m/n/10 , and sam-pling $\OML/cmm/m/it/10 D[] \OMS/cmsy/m/n/10 2 \OT1/cmr/m/n/10 [0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 006\OML/cmm/m/it/10 ; \OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 030]$\T1/ptm/m/n/10 , $\OML/cmm/m/it/10 D[] \OMS/cmsy/m/n/10 2 \OT1/cmr/m/n/10 [0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 0005\OML/cmm/m/it/10 ; \OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 005]$\T1/ptm/m/n/10 , $\OML/cmm/m/it/10 a \OMS/cmsy/m/n/10 2 \OT1/cmr/m/n/10 [0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 70\OML/cmm/m/it/10 ; \OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 95]$\T1/ptm/m/n/10 ,
  []
 
-<figures/excitable_all_or_none.png, id=269, 505.89pt x 325.215pt>
+<figures/excitable_all_or_none.png, id=284, 505.89pt x 325.215pt>
 File: figures/excitable_all_or_none.png Graphic file (type png)
 <use figures/excitable_all_or_none.png>
-Package pdftex.def Info: figures/excitable_all_or_none.png  used on input line 567.
+Package pdftex.def Info: figures/excitable_all_or_none.png  used on input line 575.
 (pdftex.def)             Requested size: 170.09244pt x 109.34592pt.
-<figures/excitable_conduction_velocity.png, id=270, 469.755pt x 325.215pt>
+<figures/excitable_conduction_velocity.png, id=285, 469.755pt x 325.215pt>
 File: figures/excitable_conduction_velocity.png Graphic file (type png)
 <use figures/excitable_conduction_velocity.png>
-Package pdftex.def Info: figures/excitable_conduction_velocity.png  used on input line 574.
+Package pdftex.def Info: figures/excitable_conduction_velocity.png  used on input line 582.
 (pdftex.def)             Requested size: 170.09244pt x 117.75716pt.
-<figures/excitable_rollout_field.png, id=277, 1084.05pt x 578.16pt>
+<figures/excitable_rollout_field.png, id=292, 1084.05pt x 578.16pt>
 File: figures/excitable_rollout_field.png Graphic file (type png)
 <use figures/excitable_rollout_field.png>
-Package pdftex.def Info: figures/excitable_rollout_field.png  used on input line 586.
+Package pdftex.def Info: figures/excitable_rollout_field.png  used on input line 594.
 (pdftex.def)             Requested size: 347.12354pt x 185.12965pt.
-[14] [15 <./figures/excitable_all_or_none.png> <./figures/excitable_conduction_velocity.png> <./figures/excitable_rollout_field.png>] [16] (./camera_ready_fhn_fno.bbl
+[15] [16 <./figures/excitable_all_or_none.png> <./figures/excitable_conduction_velocity.png> <./figures/excitable_rollout_field.png>] [17] (./camera_ready_fhn_fno.bbl
 Underfull \hbox (badness 1132) in paragraph at lines 13--14
 []\T1/ptm/m/n/9 Fabiani, G., Van-de-cas-teele, H., Goswami, S., Si-et-tos, C., Kevrekidis, I.G.: En-abling
  []
@@ -655,23 +654,23 @@ Underfull \hbox (badness 1371) in paragraph at lines 52--53
 \T1/ptm/m/n/9 fer-ence on Learn-ing Rep-re-sen-ta-tions (ICLR) (2019), [][]$https : / / openreview . net / forum ? id =
  []
 
-[17]) [18] (./camera_ready_fhn_fno.aux)
+[18]) [19] (./camera_ready_fhn_fno.aux)
 Package rerunfilecheck Info: File `camera_ready_fhn_fno.out' has not changed.
 (rerunfilecheck)             Checksum: A450D095955CDBC4578221CCAB698272;629.
  ) 
 Here is how much of TeX's memory you used:
- 15239 strings out of 476025
- 257028 string characters out of 5790017
- 1868388 words of memory out of 5000000
- 35341 multiletter control sequences out of 15000+600000
+ 15244 strings out of 476025
+ 257081 string characters out of 5790017
+ 1864388 words of memory out of 5000000
+ 35344 multiletter control sequences out of 15000+600000
  587133 words of font info for 116 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,13n,76p,1619b,613s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,13n,76p,1655b,611s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmbsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on camera_ready_fhn_fno.pdf (18 pages, 3028214 bytes).
+Output written on camera_ready_fhn_fno.pdf (19 pages, 3030719 bytes).
 PDF statistics:
- 480 PDF objects out of 1000 (max. 8388607)
- 344 compressed objects within 4 object streams
- 104 named destinations out of 1000 (max. 500000)
+ 498 PDF objects out of 1000 (max. 8388607)
+ 359 compressed objects within 4 object streams
+ 106 named destinations out of 1000 (max. 500000)
  44 words of extra memory for PDF output out of 10000 (max. 10000000)
 
