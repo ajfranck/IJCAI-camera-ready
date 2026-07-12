@@ -93,10 +93,10 @@
 \and Justin Li\inst{1}\orcidID{0000-0002-9660-6570}
 }
 
-\authorrunning{A. Franck et al.}
+\authorrunning{A. Franck and J. Li}
 
 \institute{Occidental College, Los Angeles, CA 90041, USA\\
-\email{franck@oxy.edu}
+\email{franck@oxy.edu \; justinnhli@oxy.edu}
 }
 
 \maketitle
@@ -112,8 +112,8 @@ The FitzHugh-Nagumo (FHN) system serves as a simplified model of neuronal voltag
 
 Much of the brain's signaling is shaped by two coupled processes inside each neuron: a fast change in membrane voltage that produces an action potential, and a slower recovery current that resets the cell~\cite{Izhikevich2007,Ermentrout2010}. The FitzHugh-Nagumo (FHN) reaction-diffusion system~\cite{FitzHugh1961,Nagumo1962} reduces these dynamics into two coupled equations for membrane voltage and recovery, and remains a widely used reduced model of neural excitation by capturing both single action-potential propagation and the rhythmic spiking that dominates many human-brain signals. Connecting noisy voltage recordings back to the parameters of such a model is important for neural decoding, inverse modeling, and closed-loop neuromodulation.
 
-These are all tasks that demand many fast, differentiable forward solves, which traditional finite-difference or spectral methods~\cite{Ermentrout2010,2020PhRvR...2b3068B} cannot provide because they require fine discretization and become prohibitive over large parameter sweeps. For parametric PDEs, the cost of classical solvers grows quickly with the parameter space, since each new parameter combination requires a full re-simulation. This makes tasks such as inverse parameter inference (fitting $\bm{\lambda}$ to a voltage recording) and stimulus optimization for closed-loop control challenging, and motivates fast learned surrogates. Neural Operators (NOs)~\cite{kovachki2021neural} learn mappings between infinite-dimensional function spaces, capturing the solution operator itself rather than a discretization, and Fourier Neural Operators (FNOs)~\cite{li2021fourierneuraloperatorparametric} are particularly effective for PDEs by performing their convolutions in the frequency domain.
-%
+These are all tasks that demand many fast, differentiable forward solves, which traditional finite-difference or spectral methods~\cite{Ermentrout2010,2020PhRvR...2b3068B} struggle to provide, as they require fine discretization and become prohibitive over large parameter sweeps. For parametric PDEs, the cost of classical solvers grows quickly with the parameter space, since each new parameter combination requires a full re-simulation. This makes tasks such as inverse parameter inference (fitting $\bm{\lambda}$ to a voltage recording) and stimulus optimization for closed-loop control challenging, and motivates fast learned surrogates. This paper presents a step in this direction by training such surrogates using Neural Operators (NOs)~\cite{kovachki2021neural}.
+
 \subsection*{Contributions:}
 \begin{itemize}
     \item We train a parameter-conditioned FNO for the FHN system, using feature-wise linear modulation to add $\bm{\lambda} = (D_u, D_v, a, b, \tau)$ into every Fourier layer. A single network covers the full 5D parameter space, whereas prior reaction-diffusion work~\cite{hao2024fourier} fixed the physical parameters.
@@ -124,21 +124,10 @@ These are all tasks that demand many fast, differentiable forward solves, which 
     \item We show the same FiLM-conditioned operator extends to the excitable (action-potential) regime, where it reproduces the all-or-none firing threshold and the $c \propto \sqrt{D_u}$ conduction-velocity scaling and replicates full traveling action potentials over $100$-step rollouts.
 \end{itemize}
 
-Throughout, we restrict attention to a single spatial dimension. The study is 1D, we leave the extension of the surrogate to the 2D/3D domains to future work.
+\fixme[move this to whatever paragraph describes attention]{Throughout, we restrict attention to a single spatial dimension. The study is 1D, we leave the extension of the surrogate to the 2D/3D domains to future work.}
 
-\section{Related Work}
+\section{Related Work and Mathematical Background}
 
-The FitzHugh-Nagumo model has traditionally been studied with numerical methods such as finite difference methods, finite element methods, and spectral methods \cite{Quarteroni2000,LeVeque2007}. These approaches discretize the spatial domain into grids or elements and then iteratively solve the resulting equations. These methods are accurate but require fine spatial and temporal discretization, making large parameter sweeps computationally expensive.
-
-%
-One solution to this problem is to use machine-learned surrogate models instead.  Neural operators~\cite{kovachki2021neural} learn mappings between function spaces, and the Fourier Neural Operator~\cite{li2021fourierneuraloperatorparametric} demonstrates this with spectral convolutions. Extensions include physics-informed neural operators~\cite{li2023physicsinformedneuraloperatorlearning}, multi-resolution methods~\cite{liu2024multi}, and equation-free local operators~\cite{fabiani2025enabling}.
-
-%
-\subsection{FNOs for Reaction-Diffusion Systems}
-
-The closest prior work, Hao and Song~\cite{hao2024fourier}, applies FNOs to the Surface Quasi-Geostrophic and Gray-Scott systems, but (i) holds physical parameters fixed, (ii) targets smooth field evolution, and (iii) evaluates generalization only across initial conditions. Our system adds stiff dynamics, sharper activations, and a five-dimensional parameter space that controls distinct ODE bifurcations.
-
-\section{Mathematical Background}
 \subsection{The FitzHugh-Nagumo System}
 
 The FitzHugh-Nagumo (FHN) system models neuronal voltage and recovery dynamics through two coupled reaction-diffusion equations~\cite{FitzHugh1961,Nagumo1962}:
@@ -150,59 +139,59 @@ The FitzHugh-Nagumo (FHN) system models neuronal voltage and recovery dynamics t
 
 \noindent where $u(\bm{x},t)$ is the membrane voltage, $v(\bm{x},t)$ is the recovery variable that gates the slow current, $\bm{x} \in \Omega \subseteq \mathbb{R}^1$ is the spatial coordinate, and $t \in [0,T]$ is time. The parameter vector $\bm{\lambda} = (D_u, D_v, a, b, \tau) \in \mathbb{R}^5$ characterizes the system, where $D_u, D_v > 0$ are diffusion coefficients and $(a, b, \tau)$ control the reaction kinetics. Different combinations of $\bm{\lambda}$ place the system in qualitatively distinct dynamical regimes---principally the \emph{oscillatory} (tonic-firing) and \emph{excitable} (single action-potential) regimes this paper models. Before generating data, we verify via the bifurcation analysis of \Cref{sec:bifurcation} that each sampled parameter box lies cleanly inside its intended regime.
 
+The FitzHugh-Nagumo model has traditionally been studied with numerical methods such as finite difference methods, finite element methods, and spectral methods \cite{Quarteroni2000,LeVeque2007}. These approaches discretize the spatial domain into grids or elements and then iteratively solve the resulting equations. These methods are accurate but require fine spatial and temporal discretization, making large parameter sweeps computationally expensive.
+
 \subsection{Learning Parametric Solution Operators with FNOs}
 
-We consider the challenge of learning nonlinear parametric operators $\mathcal{G}_{\bm{\lambda}}: \mathcal{U} \times \mathbb{R}^5 \rightarrow \mathcal{V}$ that map initial states to future states of the FHN system across the parameter space. These operators define mappings between infinite-dimensional function spaces $\mathcal{U}$ and $\mathcal{V}$ for each parameter configuration $\bm{\lambda} \in \mathbb{R}^5$. The input functions $\bm{u}_0 = (u_0, v_0): \Omega \rightarrow \mathbb{R}^2$ represent initial conditions, which are transformed by the operator into solution fields $\bm{u}_{\Delta t} = \mathcal{G}_{\bm{\lambda}}[\bm{u}_0]: \Omega \rightarrow \mathbb{R}^2$ at time $t = \Delta t$.
+One solution to this problem is to use machine-learned surrogate models instead. In particular, Neural Operators (NOs)~\cite{kovachki2021neural} learn mappings between infinite-dimensional function spaces, capturing the solution operator itself rather than a discretization. Fourier Neural Operators~\cite{li2021fourierneuraloperatorparametric} extend the architecture by performing their convolutions in the frequency domain, making them are particularly effective for PDEs such as the FHN system.
 
-\noindent\textbf{Single-step operator:} Maps the state at time $t$ to the state at time $t + \Delta t$:
-\begin{equation}
+Although surrogate models have been widely used, the use of FNOs in such models remain relatively rare and, to the best of our knowledge, has not yet been apply to FHN systems or similar biological neural models. Examples of FNO surrogate models include \fixme[add examples here]{FIXME}. \fixme[depending on what you add before this, this sentence may no longer be true/relevant]{The closest prior work, Hao and Song~\cite{hao2024fourier}, applies FNOs to the Surface Quasi-Geostrophic and Gray-Scott systems, but (i) holds physical parameters fixed, (ii) targets smooth field evolution, and (iii) evaluates generalization only across initial conditions.} Our system adds stiff dynamics, sharper activations, and a five-dimensional parameter space that controls distinct ODE bifurcations.
+
+We consider the challenge of learning nonlinear parametric operators $\mathcal{G}_{\bm{\lambda}}: \mathcal{U} \times \mathbb{R}^5 \rightarrow \mathcal{V}$ that map initial states to future states of the FHN system across the parameter space. These operators define mappings between infinite-dimensional function spaces $\mathcal{U}$ and $\mathcal{V}$ for each parameter configuration $\bm{\lambda} \in \mathbb{R}^5$. The input functions $\bm{u}_0 = (u_0, v_0): \Omega \rightarrow \mathbb{R}^2$ represent initial conditions, which are transformed by the operator into solution fields $\bm{u}_{\Delta t} = \mathcal{G}_{\bm{\lambda}}[\bm{u}_0]: \Omega \rightarrow \mathbb{R}^2$ at time $t = \Delta t$. We specifically learn a single-step operator that maps the state at time $t$ to the state at time $t + \Delta t$:
+\begin{equation*}
     \bm{u}_{t+\Delta t}(\bm{x},t) = \mathcal{G}_{\bm{\lambda}}^{\Delta t}[\bm{u}_t](\bm{x}), \quad \bm{x} \in \Omega.
     \label{eq:single_step}
-\end{equation}
-
+\end{equation*}
 \noindent For longer time predictions, the single-step operator is applied iteratively:
-\begin{equation}
+\begin{equation*}
     \bm{u}_{n\Delta t} = \underbrace{\mathcal{G}_{\bm{\lambda}}^{\Delta t} \circ \mathcal{G}_{\bm{\lambda}}^{\Delta t} \circ \cdots \circ \mathcal{G}_{\bm{\lambda}}^{\Delta t}}_{n \text{ times}}[\bm{u}_0].
     \label{eq:autoregressive}
-\end{equation}
+\end{equation*}
 
 \subsection{Fourier Neural Operator Architecture}
 \label{sec:fno_architecture}
 
 The Fourier Neural Operator~\cite{li2021fourierneuraloperatorparametric} approximates the solution operator $\mathcal{G}_{\bm{\lambda}}$ through a neural network $\mathcal{G}_{\bm{\theta}, \bm{\lambda}}$, where $\bm{\theta}$ denotes the learnable weights. The architecture consists of three main components:
 
-\textbf{1. Lifting:} An initial projection $\mathcal{P}: \mathbb{R}^{d_{\text{in}}} \rightarrow \mathbb{R}^w$ maps the input channels (here $d_{\text{in}} = 2$ for $(u,v)$) to a higher-dimensional representation of width $w$:
-\begin{equation}
-    \bm{z}_0(\bm{x}) = \mathcal{P}(\bm{u}_0(\bm{x})).
-\end{equation}
+\begin{enumerate}
+    \item Lifting: An initial projection $\mathcal{P}: \mathbb{R}^{d_{\text{in}}} \rightarrow \mathbb{R}^w$ maps the input channels (here $d_{\text{in}} = 2$ for $(u,v)$) to a higher-dimensional representation of width $w$:
+        \begin{equation*}
+            \bm{z}_0(\bm{x}) = \mathcal{P}(\bm{u}_0(\bm{x})).
+        \end{equation*}
 
-\textbf{2. Fourier Layers:} The core of the FNO consists of $L$ Fourier layers. Each layer $\ell \in \{1, \ldots, L\}$ applies a convolution and then a nonlinearity:
-\begin{equation}
-    \bm{z}_{\ell}(\bm{x}) = \sigma\left(\mathcal{K}_{\ell}[\bm{z}_{\ell-1}](\bm{x}) + \mathcal{W}_{\ell}(\bm{z}_{\ell-1}(\bm{x}))\right),
-    \label{eq:fourier_layer}
-\end{equation}
-where $\sigma$ is a nonlinear activation function, $\mathcal{W}_{\ell}$ is a linear transformation (implemented as $1\times1$ convolution), and $\mathcal{K}_{\ell}$ is the convolution operator. 
+    \item Fourier Layers: The core of the FNO consists of $L$ Fourier layers. Each layer $\ell \in \{1, \ldots, L\}$ applies a convolution and then a nonlinearity:
+        \begin{equation*}
+            \bm{z}_{\ell}(\bm{x}) = \sigma\left(\mathcal{K}_{\ell}[\bm{z}_{\ell-1}](\bm{x}) + \mathcal{W}_{\ell}(\bm{z}_{\ell-1}(\bm{x}))\right)
+        \end{equation*}
+        where $\sigma$ is a nonlinear activation function, $\mathcal{W}_{\ell}$ is a linear transformation (implemented as $1\times1$ convolution), and $\mathcal{K}_{\ell}$ is the convolution operator. The convolution $\mathcal{K}_{\ell}$ operates by transforming to the frequency domain, multiplying with learnable weights, and transforming back:
+        \begin{equation*}
+            \mathcal{K}_{\ell}[\bm{z}](\bm{x}) = \mathcal{F}^{-1}\left(\bm{R}_{\ell} \cdot (\mathcal{F}\bm{z})\right)(\bm{x})
+        \end{equation*}
+        where $\mathcal{F}$ and $\mathcal{F}^{-1}$ are the Fourier transform and its inverse, while $\bm{R}_{\ell} \in \mathbb{C}^{w \times w \times k_{\max}}$ are learnable weights~\cite{li2021fourierneuraloperatorparametric}.
 
-The convolution $\mathcal{K}_{\ell}$ operates by transforming to the frequency domain, multiplying with learnable weights, and transforming back:
-\begin{equation}
-    \mathcal{K}_{\ell}[\bm{z}](\bm{x}) = \mathcal{F}^{-1}\left(\bm{R}_{\ell} \cdot (\mathcal{F}\bm{z})\right)(\bm{x}),
-    \label{eq:spectral_conv}
-\end{equation}
-where $\mathcal{F}$ and $\mathcal{F}^{-1}$ are the Fourier transform and its inverse, while $\bm{R}_{\ell} \in \mathbb{C}^{w \times w \times k_{\max}}$ are learnable weights~\cite{li2021fourierneuraloperatorparametric}.
-
-\textbf{3. Projection:} A projection $\mathcal{Q}: \mathbb{R}^w \rightarrow \mathbb{R}^{d_{\text{out}}}$ maps from the hidden dimension back to the output space ($d_{\text{out}} = 2$ for $(u,v)$):
-\begin{equation}
-    \bm{u}_{\Delta t}(\bm{x}) = \mathcal{Q}(\bm{z}_L(\bm{x})).
-\end{equation}
+    \item Projection: A projection $\mathcal{Q}: \mathbb{R}^w \rightarrow \mathbb{R}^{d_{\text{out}}}$ maps from the hidden dimension back to the output space ($d_{\text{out}} = 2$ for $(u,v)$):
+        \begin{equation*}
+            \bm{u}_{\Delta t}(\bm{x}) = \mathcal{Q}(\bm{z}_L(\bm{x})).
+        \end{equation*}
+\end{enumerate}
 
 \subsection{Training Objective}
 \label{sec:training}
 
 Given a dataset $\mathcal{D} = \{(\bm{u}_0^{(i)}, \bm{u}_{\Delta t}^{(i)}, \bm{\lambda}^{(i)})\}_{i=1}^N$ of initial conditions, solutions, and parameters, we minimize the mean squared error:
-\begin{equation}
-    \mathcal{L}(\bm{\theta}) = \frac{1}{N} \sum_{i=1}^N \|\mathcal{G}_{\bm{\theta}, \bm{\lambda}^{(i)}}[\bm{u}_0^{(i)}] - \bm{u}_{\Delta t}^{(i)}\|_{L^2(\Omega)}^2,
-    \label{eq:loss}
-\end{equation}
+\begin{equation*}
+    \mathcal{L}(\bm{\theta}) = \frac{1}{N} \sum_{i=1}^N \|\mathcal{G}_{\bm{\theta}, \bm{\lambda}^{(i)}}[\bm{u}_0^{(i)}] - \bm{u}_{\Delta t}^{(i)}\|_{L^2(\Omega)}^2
+\end{equation*}
 $\bm{\theta}$ is optimized using AdamW with learning rate scheduling~\cite{loshchilov2019decoupled}.
 
 \FloatBarrier
@@ -213,9 +202,9 @@ $\bm{\theta}$ is optimized using AdamW with learning rate scheduling~\cite{loshc
 \label{sec:bifurcation}
 
 To verify that the surrogate is trained on meaningful dynamics, we analyze the spatially-homogeneous reduction of \eqref{eq:fhn_u}--\eqref{eq:fhn_v}. One fixed point satisfies $u^\star - (u^\star)^3/3 = v^\star$ and $u^\star + a = b v^\star$, which yields the cubic $b (u^\star)^3 - 3(b-1) u^\star + 3 a = 0$. Each real root gives one fixed point, and its linear Jacobian
-\begin{equation}
+\begin{equation*}
 J = \begin{pmatrix} 1 - (u^\star)^2 & -1 \\ 1/\tau & -b/\tau \end{pmatrix}
-\end{equation}
+\end{equation*}
 classifies the local flow. The regime is excitable when there is a single fixed point with $\mathrm{tr}\,J < 0$ and $\det J > 0$ (a stable rest state), and oscillatory when there is a single fixed point with $\mathrm{tr}\,J > 0$ and $\det J > 0$, an unstable focus surrounded by a limit cycle. It is bistable when there are three real fixed points.
 
 \Cref{fig:bifurcation} maps these regimes on the $(a, b)$ plane at the median training $\tau$ and overlays the two parameter boxes this paper models. The first surrogate's box (\Cref{sec:data_generation}) clearly sits in the oscillatory region: a finer sweep over $\tau \in [1, 20]$ confirms $100\%$ of the sampled cube is oscillatory, so the surrogate is trained specifically on limit-cycle neurons firing tonically rather than a dormant rest state. These same criteria place the box of the excitable surrogate (\Cref{sec:excitable_results}, $|u^\star| > 1$) entirely in the stable-rest region. Thus, a single analysis defines both dynamical regimes this paper models.
@@ -236,10 +225,10 @@ We generate training and validation datasets by solving the FHN system \eqref{eq
 \label{sec:initial_conditions}
 
 We employ Gaussian Random Fields (GRF) as the standard initial condition type. In 1D, we compute Fourier coefficients according to:
-\begin{align}
-    \hat{u}_k &= \mathcal{N}(0,1) \cdot (1 + |k|^2)^{-\alpha/2}, \\
-    \hat{v}_k &= \mathcal{N}(0,1) \cdot (1 + |k|^2)^{-\alpha/2} \cdot 0.5,
-\end{align}
+\begin{align*}
+    \hat{u}_k &= \mathcal{N}(0,1) \cdot (1 + |k|^2)^{-\alpha/2} \\
+    \hat{v}_k &= \mathcal{N}(0,1) \cdot (1 + |k|^2)^{-\alpha/2} \cdot 0.5
+\end{align*}
 where $k$ is the wavenumber, $\mathcal{N}(0,1)$ denotes a standard normal random variable, and $\alpha = 2.0$ controls the spectral decay rate. The spatial fields are obtained via inverse Fourier transform, and we normalize each field. We manually add a 0.5 factor to the $v$ field to ensure the inhibitor variable has a smaller initial amplitude than the activator; this is supported by biophysical considerations~\cite{Izhikevich2007}.
 
 
@@ -265,19 +254,19 @@ We implement the FNO architecture as follows: the network retains the lowest $k_
 \label{sec:lifting_projection}
 
 The lifting network $\mathcal{P}$ elevates the two-channel input to the $w$-dimensional hidden space through the following architecture:
-\begin{equation}
-    \mathcal{P}(\bm{u}_0) = \text{Conv1D}_{64}\left(\text{GELU}\left(\text{Conv1D}_{128}(\bm{u}_0)\right)\right),
-\end{equation}
+\begin{equation*}
+    \mathcal{P}(\bm{u}_0) = \text{Conv1D}_{64}\left(\text{GELU}\left(\text{Conv1D}_{128}(\bm{u}_0)\right)\right)
+\end{equation*}
 where $\text{Conv1D}_c$ denotes a kernel-size-1 1D convolution with $c$ output channels: the input is expanded to 128 channels, passed through GELU, then projected to the working width of 64.
 
 Similarly, the projection network $\mathcal{Q}$ mirrors this structure to map from the hidden representation back to the physical $(u, v)$ space:
-\begin{equation}
+\begin{equation*}
     \mathcal{Q}(\bm{z}_L) = \text{Conv1D}_{2}\left(\text{GELU}\left(\text{Conv1D}_{64}(\bm{z}_L)\right)\right).
-\end{equation}
+\end{equation*}
 To preserve input features during the forward pass, we apply a global residual connection to the final output:
-\begin{equation}
-    \bm{u}_{\text{pred}} = \mathcal{Q}(\bm{z}_L) + \beta_{\text{global}} \bm{u}_0,
-\end{equation}
+\begin{equation*}
+    \bm{u}_{\text{pred}} = \mathcal{Q}(\bm{z}_L) + \beta_{\text{global}} \bm{u}_0
+\end{equation*}
 where $\beta_{\text{global}}$ is a learnable scalar initialized to 0.1. It allows the network to learn small perturbations to the input state rather than reconstructing the entire output from scratch.
 
 
@@ -301,14 +290,13 @@ Each of the $L = 6$ Fourier layers computes the real FFT $\tilde{\bm{z}} = \text
 The lifting, Fourier, and projection blocks described above only take $(u_t, v_t)$ as input, and so they cannot distinguish between different FHN systems. To make it parametric, we condition each Fourier layer on the parameter vector $\bm{\lambda} = (D_u, D_v, a, b, \tau)$ via feature-wise linear modulation (FiLM)~\cite{film2018}.
 
 We first encode $\bm{\lambda}$ into a width-$w$ feature vector with a three-layer MLP $E$ with LayerNorm (widths $5 \to 2w \to w \to w$):
-\begin{equation}
+\begin{equation*}
     \bm{h}_{\bm{\lambda}} = E(\bm{\lambda}) \in \mathbb{R}^{w}.
-\end{equation}
+\end{equation*}
 At each Fourier layer $\ell$, two independent linear heads produce a per-channel scale $\bm{\gamma}_\ell \in \mathbb{R}^{w}$ and shift $\bm{\beta}_\ell \in \mathbb{R}^{w}$ from $\bm{h}_{\bm{\lambda}}$. The modulation is applied to the Fourier layer's output:
-\begin{equation}
-    \bm{z}_\ell(\bm{x}) \leftarrow \bm{\gamma}_\ell \odot \bm{z}_\ell(\bm{x}) + \bm{\beta}_\ell,
-    \label{eq:param_modulation}
-\end{equation}
+\begin{equation*}
+    \bm{z}_\ell(\bm{x}) \leftarrow \bm{\gamma}_\ell \odot \bm{z}_\ell(\bm{x}) + \bm{\beta}_\ell
+\end{equation*}
 where $\odot$ denotes channel-wise multiplication. The encoder $E$ and the per-layer heads are trained with the rest of the network. This turns the single shared operator $\mathcal{G}_{\bm{\theta}}$ into a $\bm{\lambda}$-indexed family $\{\mathcal{G}_{\bm{\theta}, \bm{\lambda}}\}$, with modulation acting the same at every spatial location.
 
 \subsection{Training and Evaluation}
@@ -351,7 +339,9 @@ Training pairs $(\bm{u}_t, \bm{u}_{t+\Delta t})$ are drawn from trajectories wit
 \section{Results}
 \label{sec:results}
 
-Our evaluation builds a case in the order a downstream user would care about, with each stage answering a distinct question about the surrogate as a forward model. We first establishsingle-step accuracy (is one operator application faithful?), then a per-parameter error breakdown (is that accuracy uniform across the 5D space?), then long-horizon autoregressive rollout (does error stay bounded when the operator is iterated, i.e. the actual use case?), then computational efficiency and finally generalization outside the training ranges and transfer to the excitable regime. Unless stated otherwise, the results in this section concern the oscillatory (tonic-firing) regime; the complementary excitable regime is treated separately in \Cref{sec:excitable_results}. Model and hyperparameter selection (e.g.\ the $k_{\max}$ ablation of \Cref{sec:fourier_layer_design}) used the validation split, whereas all errors reported here are computed on the disjoint held-out test set of $1{,}600$ trajectories described in \Cref{sec:dataset_specs}, whose parameter combinations and initial conditions were unseen during training and selection.
+We evaluate our with five different metrics. We first establish single-step accuracy (is one operator application faithful?) and further analyze the errors on a per-parameter basis. We then examine a long-horizon autoregressive rollout (does error stay bounded when the operator is iterated \fixme["in long-duration simulations"?]{, i.e. the actual use case?}), as well as generalization outside the training parameter ranges. Finally, we evaluate the computational efficiency of the FNO surrogate compared to finite-difference solvers.
+
+Unless stated otherwise, the results in this section concern the oscillatory (tonic-firing) regime; the \fixme[fact check]{qualitatively similar} results for the complementary excitable regime can be found in \Cref{sec:excitable_results}. Model and hyperparameter selection (e.g.\ the $k_{\max}$ ablation of \Cref{sec:fourier_layer_design}) used the validation split, whereas all errors reported here are computed on the disjoint held-out test set of $1{,}600$ trajectories described in \Cref{sec:dataset_specs}, whose parameter combinations and initial conditions were unseen during training and selection.
 
 \subsection{Single-Step Prediction Accuracy}
 \label{sec:single_step_results}
@@ -379,6 +369,19 @@ Max AE & $0.178$ & $0.309$ \\
 \caption{Single-step prediction accuracy on the held-out test set ($N_{\text{test}} = 1600$ trajectories, $n_x = 256$ spatial points), in normalized space. Values are 5-seed means (per-trajectory mean for relative $L^2$, element-wise averages otherwise). Per-seed variability is reported in \Cref{tab:baselines}.}
 \label{tab:single_step_metrics}
 \end{table}
+
+The parametric FNO predicts single time steps with sub-$0.1\%$ relative $L^2$ error on both fields: $6.66 \times 10^{-4}$ ($0.067\%$) for the activator $u$ and $8.01 \times 10^{-4}$ ($0.080\%$) for the inhibitor $v$. The inhibitor's marginally higher relative error is expected given its smaller amplitude, so that comparable absolute deviations then translate into larger relative values. Mean absolute errors ($4.1 \times 10^{-4}$ for $u$, $5.9 \times 10^{-4}$ for $v$) and mean squared errors ($3.0 \times 10^{-6}$, $9.0 \times 10^{-6}$) are physically negligible, and the largest pointwise deviations of max absolute error $0.18$ for $u$ and $0.31$ for $v$ are confined to sharp wavefronts, leaving the total metrics almost entirely unaffected.
+
+Qualitative single-step predictions across weakly, moderately, and strongly diffusive regimes are visually indistinguishable from ground truth (\Cref{fig:single_step_comparison}). The per-regime single-step MAE ranges from $5 \times 10^{-5}$ to $2 \times 10^{-4}$, with the weakly diffusive case having the largest errors, consistent with the diffusion-driven failure mode of \Cref{sec:extrapolation_results}. It notes that weaker diffusion leaves sharper wavefronts that are truncated by the $k_{\max}{=}16$ spectral filter.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\columnwidth]{figures/single_step_regimes.png}
+\caption{Single-step prediction across three representative test regimes (rows: weakly, moderately, strongly diffusive). Left: ground truth vs predicted $u$. Center: ground truth vs predicted $v$. Right: absolute error in $u$ and $v$ (scaled for visibility). Predicted and true profiles are visually indistinguishable.}
+\label{fig:single_step_comparison}
+\end{figure}
+
+We additionally compare against two two natural baselines. ``Baseline FNO'' uses the identical backbone (width 64, 16 modes, 6 layers) but with the parameter vector $\bm{\lambda}$ broadcast as five constant spatial input channels instead of being injected via FiLM\fixme[Why is this a good baseline?]{}. DeepONet~\cite{lu2021learning} is a branch--trunk operator-learning architecture that encodes the input field and the query coordinates through separate subnetworks\fixme[again, briefly explain why this is a good baseline]{}; the comparison mode uses a flattened $(u_t, v_t)$ concatenated with $\bm{\lambda}$. The results are show in Table~\ref{tab:baselines}. DeepONet performs far worse here: its relative $L^2$ error is roughly $58\times$ higher on $u$ and $50\times$ higher on $v$. The channel-broadcast FNO is more competitive but still performs worse than the FiLM-conditioned model by roughly $30\%$ on both fields, while still containing $26\%$ more parameters ($0.63$M vs $0.50$M). FiLM conditioning therefore improves accuracy and reduces model size relative to broadcasting $\bm{\lambda}$ as constant channels, so the gain comes from how parameters are added rather than from added capacity.
 
 
 \begin{table*}[!ht]
@@ -413,34 +416,16 @@ Param. FNO
 \caption{Baseline comparison on the test set ($N_{\text{test}} = 1600$
 trajectories, $n_x = 256$). All error values are mean $\pm$ standard deviation
 across $n_{\text{seeds}} = 5$ independent training runs, reported in units of
-$10^{-3}$. ``Baseline FNO'' uses the identical backbone (width 64, 16 modes,
-6 layers) but with the parameter vector $\bm{\lambda}$ broadcast as five constant
-spatial input channels instead of being injected via FiLM. DeepONet branch uses
-flattened $(u_t, v_t)$ concatenated with $\bm{\lambda}$.}
+$10^{-3}$. }
 \label{tab:baselines}
 \end{table*}
-
-The parametric FNO predicts single time steps with sub-$0.1\%$ relative $L^2$ error on both fields: $6.66 \times 10^{-4}$ ($0.067\%$) for the activator $u$ and $8.01 \times 10^{-4}$ ($0.080\%$) for the inhibitor $v$. The inhibitor's marginally higher relative error is expected given its smaller amplitude, so that comparable absolute deviations then translate into larger relative values.
-
-Mean absolute errors ($4.1 \times 10^{-4}$ for $u$, $5.9 \times 10^{-4}$ for $v$) and mean squared errors ($3.0 \times 10^{-6}$, $9.0 \times 10^{-6}$) are physically negligible, and the largest pointwise deviations of max absolute error $0.18$ for $u$ and $0.31$ for $v$ are confined to sharp wavefronts, leaving the total metrics almost entirely unaffected.
-
-\noindent\textbf{Baseline comparison.} Table~\ref{tab:baselines} compares two natural baselines. DeepONet~\cite{lu2021learning}, a branch--trunk operator-learning architecture that encodes the input field and the query coordinates through separate subnetworks, is far worse here: its relative $L^2$ error is roughly $58\times$ higher on $u$ and $50\times$ higher on $v$. The channel-broadcast FNO is more competitive but still performs worse than the FiLM-conditioned model by roughly $30\%$ on both fields, while still containing $26\%$ more parameters ($0.63$M vs $0.50$M). FiLM conditioning therefore improves accuracy and reduces model size relative to broadcasting $\bm{\lambda}$ as constant channels, so the gain comes from how parameters are added rather than from added capacity.
-
-Qualitative single-step predictions across weakly, moderately, and strongly diffusive regimes are visually indistinguishable from ground truth (\Cref{fig:single_step_comparison}). The per-regime single-step MAE ranges from $5 \times 10^{-5}$ to $2 \times 10^{-4}$, with the weakly diffusive case having the largest errors, consistent with the diffusion-driven failure mode of \Cref{sec:extrapolation_results}. It notes that weaker diffusion leaves sharper wavefronts that are truncated by the $k_{\max}{=}16$ spectral filter.
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=\columnwidth]{figures/single_step_regimes.png}
-\caption{Single-step prediction across three representative test regimes (rows: weakly, moderately, strongly diffusive). Left: ground truth vs predicted $u$. Center: ground truth vs predicted $v$. Right: absolute error in $u$ and $v$ (scaled for visibility). Predicted and true profiles are visually indistinguishable.}
-\label{fig:single_step_comparison}
-\end{figure}
 
 
 \subsection{Parameter Error Correlation}
 \label{sec:parameter_generalization}
 
 
-It's important to note that a single averaged error can hide some behavior: a surrogate may look accurate overall while failing along one axis of the parameter space. Because the coordinates of $\bm{\lambda}$ correspond to distinct ODE bifurcations, the axes where error concentrates carry physical meaning and indicate where to add data augmentation. Thus, we relate the error to each axis of $\bm{\lambda}$ individually so we can determine whether any single parameter drives accuracy. We note that the Pearson $\rho$ used here captures only linear/monotonic dependence, so a purely nonlinear sensitivity could go undetected. Table~\ref{tab:parameter_correlation} reports Pearson correlations between each FHN parameter and the relative $L^2$ error for both $u$ and $v$.
+It's important to note that a single averaged error can hide some behavior: a surrogate may look accurate overall while failing along one axis of the parameter space. Because the coordinates of $\bm{\lambda}$ correspond to distinct ODE bifurcations, the axes where error concentrates carry physical meaning and indicate where to add data augmentation. Here, we relate the error to each axis of $\bm{\lambda}$ individually so we can determine whether any single parameter drives accuracy. We note that the Pearson $\rho$ used here captures only linear/monotonic dependence, so a purely nonlinear sensitivity could go undetected. Table~\ref{tab:parameter_correlation} reports Pearson correlations between each FHN parameter and the relative $L^2$ error for both $u$ and $v$.
 
 
 \begin{table}[!ht]
@@ -463,18 +448,18 @@ $v$ error & $-0.166$ & $+0.114$ & $+0.025$ & $-0.027$ & $-0.357$ \\
 \label{tab:parameter_correlation}
 \end{table}
 
-The largest correlation magnitude anywhere in \Cref{tab:parameter_correlation} is $|\rho| = 0.357$ (the $\tau$--$v$ term), so every coefficient falls below $0.36$, which indicates relatively uniform accuracy. Contrary to expectation that the faster activator would be more sensitive, $u$ is nearly parameter-agnostic: its strongest correlation is a weak $\rho = +0.143$ with $D_u$, and every other coefficient is under $|\rho| \le 0.06$. The variation that exists is concentrated in the inhibitor $v$, whose dominant axis is the time-scale $\tau$, with $\rho = -0.357$. This is physically sensible, since $\tau$ sets the relaxation rate of the slow recovery variable. The negative sign means $v$ is predicted slightly more accurately at larger $\tau$, where its dynamics are smoother. The reaction parameters $a$ and $b$ are basically uncorrelated with the error on both fields, with $|\rho| \le 0.05$.
+The largest correlation magnitude anywhere in \Cref{tab:parameter_correlation} is $|\rho| = 0.357$ (the $\tau$--$v$ term), which indicates relatively uniform accuracy. Contrary to expectation that the faster activator would be more sensitive, $u$ is nearly parameter-agnostic: its strongest correlation is a weak $\rho = +0.143$ with $D_u$, and every other coefficient is under $|\rho| \le 0.06$. The variation that exists is concentrated in the inhibitor $v$, whose dominant axis is the time-scale $\tau$, with $\rho = -0.357$. This is physically sensible, since $\tau$ sets the relaxation rate of the slow recovery variable. The negative sign means $v$ is predicted slightly more accurately at larger $\tau$, where its dynamics are smoother. The reaction parameters $a$ and $b$ are basically uncorrelated with the error on both fields, with $|\rho| \le 0.05$.
 
 Error thus concentrates along the time-scale axis rather than the reaction axes, but even there the dependence is moderate. This relatively uniform structure indicates that random parameter sampling sufficed to cover the space, and the within-range trend that higher $\tau$ is easier is consistent with the time-scale extrapolation shown next.
 
-\subsection{Long-Time Autoregressive Rollout}
+\subsection{Long-Duration Autoregressive Rollout}
 \label{sec:autoregressive_results}
 
 Many applications require predictions over extended time horizons. We evaluate the FNO's autoregressive rollout capability by iteratively applying the single-step operator for $n_{\text{steps}} = 50$ time steps, corresponding to a total evolution time of $T = 0.5$ time units ($50\times$ the training time step $\Delta t = 0.01$).
 
 Most substantially, the operator does not suffer from runaway error accumulation: even after $50$ autoregressive steps the relative $L^2$ error is only $\sim$$0.5\%$ for the activator $u$ and $\sim$$0.7\%$ for the inhibitor $v$. The activator error grows roughly linearly, whereas the inhibitor error drops over the first few steps before increasing sub-linearly. This early dip reflects the inhibitor's slow time scale, as the single-step operator slightly over-sharpens $v$, but $v$'s own slow, diffusive relaxation damps that transient over the next few steps before the regular error accumulation takes over. Because the activator error grows faster, the two curves converge by step $50$ and $u$ would likely surpass $v$ over a longer time horizon.
 
-Note that over longer time horizons the FNO error could grow to concerning levels. Future work could explore training strategies such as fixed-horizon rollouts to improve long-time stability. A phase-space analysis (\Cref{fig:phase_portraits}) confirms that the FNO preserves the limit-cycle geometry at fixed spatial locations, with the only departure being an extremely slow phase drift consistent with the autoregressive error accumulation.
+Note that over longer time horizons the FNO error could grow to concerning levels. Future work could explore training strategies such as fixed-horizon rollouts to improve long-term stability. A phase-space analysis (\Cref{fig:phase_portraits}) confirms that the FNO preserves the limit-cycle geometry at fixed spatial locations, with the only departure being an extremely slow phase drift consistent with the autoregressive error accumulation.
 
 \begin{figure}[!ht]
 \centering
@@ -483,34 +468,8 @@ Note that over longer time horizons the FNO error could grow to concerning level
 \label{fig:phase_portraits}
 \end{figure}
 
-\subsection{Computational Efficiency}
-\label{sec:efficiency_results}
 
-Table~\ref{tab:efficiency_comparison} compares the FNO against the semi-implicit FD solver on one 50-step trajectory rollout. The FNO delivers $111\times$ speedup at batch 1 and $920\times$ at batch 32, turning a 2-second simulation into 2 ms. There is, however, a tradeoff: $\sim$150 MB for the FNO vs 8 MB for the FD solver's sparse matrices. However, we think this is a reasonable price for the speedup.
-
-\begin{table}[!ht]
-\centering
-\begin{small}
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lccc}
-\toprule
-Method & Time/step & Total (50 steps) & Memory \\
-\midrule
-FD (batch 32) & $42.3$ ms & $2.12$ s & $8.4$ MB \\
-FNO (batch 1) & $0.38$ ms & $0.019$ s & $147$ MB \\
-FNO (batch 32) & $0.045$ ms & $0.0023$ s & $152$ MB \\
-\midrule
-Speedup & $111\times$ / $940\times$ & $111\times$ / $920\times$ & --- \\
-\bottomrule
-\end{tabular}
-\end{small}
-\smallskip
-\caption{Computational efficiency comparison between FNO and finite-difference (FD) solver for a single trajectory rollout ($n_x = 256$, $n_{\text{steps}} = 50$, NVIDIA A100).}
-\label{tab:efficiency_comparison}
-\end{table}
-
-
-\subsection{Generalization to Unseen Regimes}
+\subsection{Generalization to Unseen Parameters}
 \label{sec:extrapolation_results}
 We evaluate the FNO on parameters outside the training ranges to determine its extrapolation capabilities. Table~\ref{tab:extrapolation} reports four scenarios.
 
@@ -537,6 +496,32 @@ Low recovery ($b{=}0.05$) & $0.0003559$ & $0.0003577$ \\
 \end{table}
 
 Diffusion magnitude is the primary failure mode. When both diffusion coefficients are $50$--$60\%$ above the training range, the activator error increases to $3.4\%$ (roughly $51\times$ the within-range value) and the inhibitor to $1.6\%$ ($\sim$$20\times$), while lowering them below the training range gives only a $\sim$$10\times$ increase. In contrast, the model extrapolates well along the reaction and time-scale axes: while at $\tau{=}30$, the activator error stays below the within-range value and the inhibitor rises only by $\sim$$33\%$, and the low-recovery case ($b{=}0.05$) is more accurate than within-range on both fields. This contradicts the idea that the stiff time-scale separation regime is the difficult one. Instead, the sharp spatial gradients, which shift energy into the high wavenumbers that become truncated by the spectral layers, are what degrade accuracy. This suggests that future work could improve extrapolation by augmenting the training data with sharper profiles.
+
+\subsection{Computational Efficiency}
+\label{sec:efficiency_results}
+
+Table~\ref{tab:efficiency_comparison} compares the FNO against the semi-implicit FD solver on one 50-step trajectory rollout. The FNO delivers $111\times$ speedup at batch 1 and $920\times$ at batch 32, turning a 2-second simulation into 2 ms. There is, however, a tradeoff: $\sim$150 MB for the FNO vs 8 MB for the FD solver's sparse matrices. However, we think this is a reasonable price for the speedup.
+
+\begin{table}[!ht]
+\centering
+\begin{small}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+Method & Time/step & Total (50 steps) & Memory \\
+\midrule
+FD (batch 32) & $42.3$ ms & $2.12$ s & $8.4$ MB \\
+FNO (batch 1) & $0.38$ ms & $0.019$ s & $147$ MB \\
+FNO (batch 32) & $0.045$ ms & $0.0023$ s & $152$ MB \\
+\midrule
+Speedup & $111\times$ / $940\times$ & $111\times$ / $920\times$ & --- \\
+\bottomrule
+\end{tabular}
+\end{small}
+\smallskip
+\caption{Computational efficiency comparison between FNO and finite-difference (FD) solver for a single trajectory rollout ($n_x = 256$, $n_{\text{steps}} = 50$, NVIDIA A100).}
+\label{tab:efficiency_comparison}
+\end{table}
 
 \subsection{Excitable Regime: Action-Potential Propagation}
 \label{sec:excitable_results}
