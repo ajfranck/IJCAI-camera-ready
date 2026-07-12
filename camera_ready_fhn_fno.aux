@@ -1,0 +1,199 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{Izhikevich2007,Ermentrout2010}
+\citation{FitzHugh1961,Nagumo1962}
+\citation{Ermentrout2010,2020PhRvR...2b3068B}
+\citation{kovachki2021neural}
+\@writefile{toc}{\contentsline {title}{Fast Surrogate Modeling of Excitable and Oscillatory FitzHugh-Nagumo Dynamics with Parametric Neural Operators}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\authcount {2}}
+\@writefile{toc}{\contentsline {author}{Andrew Franck \and Justin Li }{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1.1}\protected@file@percent }
+\citation{hao2024fourier}
+\citation{FitzHugh1961,Nagumo1962}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work and Mathematical Background}{2}{section.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}The FitzHugh-Nagumo System}{2}{subsection.1.2.1}\protected@file@percent }
+\newlabel{eq:fhn_u}{{1}{2}{The FitzHugh-Nagumo System}{equation.1.2.1}{}}
+\newlabel{eq:fhn_u@cref}{{[equation][1][]1}{[1][2][]2}}
+\newlabel{eq:fhn_v}{{2}{2}{The FitzHugh-Nagumo System}{equation.1.2.2}{}}
+\newlabel{eq:fhn_v@cref}{{[equation][2][]2}{[1][2][]2}}
+\citation{Quarteroni2000,LeVeque2007}
+\citation{kovachki2021neural}
+\citation{li2021fourierneuraloperatorparametric}
+\citation{grady2023modelparallel}
+\citation{ghadjari2026fno}
+\citation{kang2024adjoint}
+\citation{hao2024fourier}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Learning Parametric Solution Operators with FNOs}{3}{subsection.1.2.2}\protected@file@percent }
+\newlabel{eq:single_step}{{2.2}{3}{Learning Parametric Solution Operators with FNOs}{subsection.1.2.2}{}}
+\newlabel{eq:single_step@cref}{{[subsection][2][2]2.2}{[1][3][]3}}
+\citation{li2021fourierneuraloperatorparametric}
+\citation{li2021fourierneuraloperatorparametric}
+\citation{loshchilov2019decoupled}
+\newlabel{eq:autoregressive}{{2.2}{4}{Learning Parametric Solution Operators with FNOs}{subsection.1.2.2}{}}
+\newlabel{eq:autoregressive@cref}{{[subsection][2][2]2.2}{[1][3][]4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Fourier Neural Operator Architecture}{4}{subsection.1.2.3}\protected@file@percent }
+\newlabel{sec:fno_architecture}{{2.3}{4}{Fourier Neural Operator Architecture}{subsection.1.2.3}{}}
+\newlabel{sec:fno_architecture@cref}{{[subsection][3][2]2.3}{[1][4][]4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Training Objective}{4}{subsection.1.2.4}\protected@file@percent }
+\newlabel{sec:training}{{2.4}{4}{Training Objective}{subsection.1.2.4}{}}
+\newlabel{sec:training@cref}{{[subsection][4][2]2.4}{[1][4][]4}}
+\citation{Izhikevich2007}
+\citation{FitzHugh1961,Keener2009,Izhikevich2007}
+\citation{Rinzel1998,Ermentrout2010}
+\citation{Rinzel1998,Ermentrout2010}
+\citation{Izhikevich2007,Terman1992}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Implementation}{5}{section.1.3}\protected@file@percent }
+\newlabel{sec:implementation}{{3}{5}{Implementation}{section.1.3}{}}
+\newlabel{sec:implementation@cref}{{[section][3][]3}{[1][4][]5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Dynamical Regimes and Parameter-Box Placement}{5}{subsection.1.3.1}\protected@file@percent }
+\newlabel{sec:bifurcation}{{3.1}{5}{Dynamical Regimes and Parameter-Box Placement}{subsection.1.3.1}{}}
+\newlabel{sec:bifurcation@cref}{{[subsection][1][3]3.1}{[1][4][]5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Data Generation}{5}{subsection.1.3.2}\protected@file@percent }
+\newlabel{sec:data_generation}{{3.2}{5}{Data Generation}{subsection.1.3.2}{}}
+\newlabel{sec:data_generation@cref}{{[subsection][2][3]3.2}{[1][5][]5}}
+\newlabel{sec:initial_conditions}{{3.2}{5}{Initial Conditions}{section*.4}{}}
+\newlabel{sec:initial_conditions@cref}{{[subsection][2][3]3.2}{[1][5][]5}}
+\@writefile{toc}{\contentsline {subsubsection}{Initial Conditions}{5}{section*.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Dynamical-regime map of the spatially-homogeneous FHN ODE at the median training $\tau = 10.5$. Green: excitable (stable rest state). Orange: oscillatory (limit cycle, tonic firing). Purple: bistable. The black rectangle is the oscillatory training box and the blue rectangle is the excitable training box. It is visually very clear, and supported by a sweep across the full $\tau $ range, that both boxes lie entirely within their respective regimes.\relax }}{6}{figure.caption.3}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:bifurcation}{{1}{6}{Dynamical-regime map of the spatially-homogeneous FHN ODE at the median training $\tau = 10.5$. Green: excitable (stable rest state). Orange: oscillatory (limit cycle, tonic firing). Purple: bistable. The black rectangle is the oscillatory training box and the blue rectangle is the excitable training box. It is visually very clear, and supported by a sweep across the full $\tau $ range, that both boxes lie entirely within their respective regimes.\relax }{figure.caption.3}{}}
+\newlabel{fig:bifurcation@cref}{{[figure][1][]1}{[1][5][]6}}
+\newlabel{sec:parameter_sampling}{{3.2}{6}{Parameter Sampling}{section*.5}{}}
+\newlabel{sec:parameter_sampling@cref}{{[subsection][2][3]3.2}{[1][5][]6}}
+\@writefile{toc}{\contentsline {subsubsection}{Parameter Sampling}{6}{section*.5}\protected@file@percent }
+\newlabel{sec:dataset_specs}{{3.2}{6}{Dataset Specifications}{section*.6}{}}
+\newlabel{sec:dataset_specs@cref}{{[subsection][2][3]3.2}{[1][6][]6}}
+\@writefile{toc}{\contentsline {subsubsection}{Dataset Specifications}{6}{section*.6}\protected@file@percent }
+\citation{li2021fourierneuraloperatorparametric}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Model Architecture}{7}{subsection.1.3.3}\protected@file@percent }
+\newlabel{sec:model_architecture}{{3.3}{7}{Model Architecture}{subsection.1.3.3}{}}
+\newlabel{sec:model_architecture@cref}{{[subsection][3][3]3.3}{[1][7][]7}}
+\newlabel{sec:lifting_projection}{{3.3}{7}{Lifting and Projection Networks}{section*.7}{}}
+\newlabel{sec:lifting_projection@cref}{{[subsection][3][3]3.3}{[1][7][]7}}
+\@writefile{toc}{\contentsline {subsubsection}{Lifting and Projection Networks}{7}{section*.7}\protected@file@percent }
+\newlabel{sec:fourier_layer_design}{{3.3}{7}{Fourier Layer Design}{section*.8}{}}
+\newlabel{sec:fourier_layer_design@cref}{{[subsection][3][3]3.3}{[1][7][]7}}
+\@writefile{toc}{\contentsline {subsubsection}{Fourier Layer Design}{7}{section*.8}\protected@file@percent }
+\citation{film2018}
+\@writefile{toc}{\contentsline {paragraph}{Choosing $k_{\max }{=}16$.}{8}{section*.9}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Ablation of the Fourier-mode truncation $k_{\max }$ on the 8000-sample dataset (3 seeds per configuration). Left: validation rel-$L^2$ on $u$ and $v$. Right: parameter count. $k_{\max } = 16$ lies in the accuracy plateau while keeping model size modest.\relax }}{8}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:kmax_ablation}{{2}{8}{Ablation of the Fourier-mode truncation $k_{\max }$ on the 8000-sample dataset (3 seeds per configuration). Left: validation rel-$L^2$ on $u$ and $v$. Right: parameter count. $k_{\max } = 16$ lies in the accuracy plateau while keeping model size modest.\relax }{figure.caption.10}{}}
+\newlabel{fig:kmax_ablation@cref}{{[figure][2][]2}{[1][8][]8}}
+\newlabel{sec:parameter_conditioning}{{3.3}{8}{Parameter Conditioning}{section*.11}{}}
+\newlabel{sec:parameter_conditioning@cref}{{[subsection][3][3]3.3}{[1][8][]8}}
+\@writefile{toc}{\contentsline {subsubsection}{Parameter Conditioning}{8}{section*.11}\protected@file@percent }
+\citation{loshchilov2019decoupled}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Training and Evaluation}{9}{subsection.1.3.4}\protected@file@percent }
+\newlabel{sec:training_config}{{3.4}{9}{Training and Evaluation}{subsection.1.3.4}{}}
+\newlabel{sec:training_config@cref}{{[subsection][4][3]3.4}{[1][9][]9}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Data-generation, architecture, and training hyperparameters.\relax }}{9}{table.caption.12}\protected@file@percent }
+\newlabel{tab:hyperparams}{{1}{9}{Data-generation, architecture, and training hyperparameters.\relax }{table.caption.12}{}}
+\newlabel{tab:hyperparams@cref}{{[table][1][]1}{[1][9][]9}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{9}{section.1.4}\protected@file@percent }
+\newlabel{sec:results}{{4}{9}{Results}{section.1.4}{}}
+\newlabel{sec:results@cref}{{[section][4][]4}{[1][9][]9}}
+\citation{lu2021learning}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Single-Step Prediction Accuracy}{10}{subsection.1.4.1}\protected@file@percent }
+\newlabel{sec:single_step_results}{{4.1}{10}{Single-Step Prediction Accuracy}{subsection.1.4.1}{}}
+\newlabel{sec:single_step_results@cref}{{[subsection][1][4]4.1}{[1][10][]10}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Single-step prediction accuracy on the held-out test set ($N_{\text  {test}} = 1600$ trajectories, $n_x = 256$ spatial points), in normalized space. Values are 5-seed means (per-trajectory mean for relative $L^2$, element-wise averages otherwise). Per-seed variability is reported in \Cref  {tab:baselines}.\relax }}{10}{table.caption.13}\protected@file@percent }
+\newlabel{tab:single_step_metrics}{{2}{10}{Single-step prediction accuracy on the held-out test set ($N_{\text {test}} = 1600$ trajectories, $n_x = 256$ spatial points), in normalized space. Values are 5-seed means (per-trajectory mean for relative $L^2$, element-wise averages otherwise). Per-seed variability is reported in \Cref {tab:baselines}.\relax }{table.caption.13}{}}
+\newlabel{tab:single_step_metrics@cref}{{[table][2][]2}{[1][10][]10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Single-step prediction across three representative test regimes (rows: weakly, moderately, strongly diffusive). Left: ground truth vs predicted $u$. Center: ground truth vs predicted $v$. Right: absolute error in $u$ and $v$ (scaled for visibility). Predicted and true profiles are visually indistinguishable.\relax }}{11}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:single_step_comparison}{{3}{11}{Single-step prediction across three representative test regimes (rows: weakly, moderately, strongly diffusive). Left: ground truth vs predicted $u$. Center: ground truth vs predicted $v$. Right: absolute error in $u$ and $v$ (scaled for visibility). Predicted and true profiles are visually indistinguishable.\relax }{figure.caption.14}{}}
+\newlabel{fig:single_step_comparison@cref}{{[figure][3][]3}{[1][10][]11}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Baseline comparison on the test set ($N_{\text  {test}} = 1600$ trajectories, $n_x = 256$). All error values are mean $\pm $ standard deviation across $n_{\text  {seeds}} = 5$ independent training runs, reported in units of $10^{-3}$. \relax }}{12}{table.caption.15}\protected@file@percent }
+\newlabel{tab:baselines}{{3}{12}{Baseline comparison on the test set ($N_{\text {test}} = 1600$ trajectories, $n_x = 256$). All error values are mean $\pm $ standard deviation across $n_{\text {seeds}} = 5$ independent training runs, reported in units of $10^{-3}$. \relax }{table.caption.15}{}}
+\newlabel{tab:baselines@cref}{{[table][3][]3}{[1][11][]12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Parameter Error Correlation}{12}{subsection.1.4.2}\protected@file@percent }
+\newlabel{sec:parameter_generalization}{{4.2}{12}{Parameter Error Correlation}{subsection.1.4.2}{}}
+\newlabel{sec:parameter_generalization@cref}{{[subsection][2][4]4.2}{[1][12][]12}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Pearson correlation between each FHN parameter and the per-trajectory single-step relative $L^2$ error on the test set. All $|\rho | < 0.36$, indicating relatively uniform generalization across the five-dimensional parameter space.\relax }}{12}{table.caption.16}\protected@file@percent }
+\newlabel{tab:parameter_correlation}{{4}{12}{Pearson correlation between each FHN parameter and the per-trajectory single-step relative $L^2$ error on the test set. All $|\rho | < 0.36$, indicating relatively uniform generalization across the five-dimensional parameter space.\relax }{table.caption.16}{}}
+\newlabel{tab:parameter_correlation@cref}{{[table][4][]4}{[1][12][]12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Long-Duration Autoregressive Rollout}{13}{subsection.1.4.3}\protected@file@percent }
+\newlabel{sec:autoregressive_results}{{4.3}{13}{Long-Duration Autoregressive Rollout}{subsection.1.4.3}{}}
+\newlabel{sec:autoregressive_results@cref}{{[subsection][3][4]4.3}{[1][13][]13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Phase-space portraits at three spatial locations ($v$ vs $u$, $50$ time steps). Blue: ground truth, Orange dashed: FNO. Green circle: initial condition. Square and triangle: ground-truth and predicted endpoints, respectively. The operator traces the same limit-cycle geometry as the solver, with only a gradual end-of-rollout phase drift.\relax }}{13}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:phase_portraits}{{4}{13}{Phase-space portraits at three spatial locations ($v$ vs $u$, $50$ time steps). Blue: ground truth, Orange dashed: FNO. Green circle: initial condition. Square and triangle: ground-truth and predicted endpoints, respectively. The operator traces the same limit-cycle geometry as the solver, with only a gradual end-of-rollout phase drift.\relax }{figure.caption.17}{}}
+\newlabel{fig:phase_portraits@cref}{{[figure][4][]4}{[1][13][]13}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Generalization to Unseen Parameters}{14}{subsection.1.4.4}\protected@file@percent }
+\newlabel{sec:extrapolation_results}{{4.4}{14}{Generalization to Unseen Parameters}{subsection.1.4.4}{}}
+\newlabel{sec:extrapolation_results@cref}{{[subsection][4][4]4.4}{[1][14][]14}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Generalization performance outside the training ranges. Relative $L^2$ error, mean over 100 test trajectories per scenario.\relax }}{14}{table.caption.18}\protected@file@percent }
+\newlabel{tab:extrapolation}{{5}{14}{Generalization performance outside the training ranges. Relative $L^2$ error, mean over 100 test trajectories per scenario.\relax }{table.caption.18}{}}
+\newlabel{tab:extrapolation@cref}{{[table][5][]5}{[1][14][]14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Computational Efficiency}{14}{subsection.1.4.5}\protected@file@percent }
+\newlabel{sec:efficiency_results}{{4.5}{14}{Computational Efficiency}{subsection.1.4.5}{}}
+\newlabel{sec:efficiency_results@cref}{{[subsection][5][4]4.5}{[1][14][]14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Excitable Regime: Action-Potential Propagation}{14}{subsection.1.4.6}\protected@file@percent }
+\newlabel{sec:excitable_results}{{4.6}{14}{Excitable Regime: Action-Potential Propagation}{subsection.1.4.6}{}}
+\newlabel{sec:excitable_results@cref}{{[subsection][6][4]4.6}{[1][14][]14}}
+\citation{Keener2009}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Computational efficiency comparison between FNO and finite-difference (FD) solver for a single trajectory rollout ($n_x = 256$, $n_{\text  {steps}} = 50$, NVIDIA A100).\relax }}{15}{table.caption.19}\protected@file@percent }
+\newlabel{tab:efficiency_comparison}{{6}{15}{Computational efficiency comparison between FNO and finite-difference (FD) solver for a single trajectory rollout ($n_x = 256$, $n_{\text {steps}} = 50$, NVIDIA A100).\relax }{table.caption.19}{}}
+\newlabel{tab:efficiency_comparison@cref}{{[table][6][]6}{[1][14][]15}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Single-step prediction accuracy in the excitable regime, $N = 250$ trajectories, in normalized units.\relax }}{15}{table.caption.20}\protected@file@percent }
+\newlabel{tab:excitable_metrics}{{7}{15}{Single-step prediction accuracy in the excitable regime, $N = 250$ trajectories, in normalized units.\relax }{table.caption.20}{}}
+\newlabel{tab:excitable_metrics@cref}{{[table][7][]7}{[1][15][]15}}
+\newlabel{sec:outlook}{{4.6}{15}{Limitations and Future Work}{section*.23}{}}
+\newlabel{sec:outlook@cref}{{[subsection][6][4]4.6}{[1][15][]15}}
+\citation{Kilgore2014}
+\citation{fabiani2025enabling}
+\newlabel{fig:excitable_threshold}{{5a}{16}{All-or-none threshold.\relax }{figure.caption.21}{}}
+\newlabel{fig:excitable_threshold@cref}{{[subfigure][1][5]5a}{[1][15][]16}}
+\newlabel{sub@fig:excitable_threshold}{{a}{16}{All-or-none threshold.\relax }{figure.caption.21}{}}
+\newlabel{sub@fig:excitable_threshold@cref}{{[subfigure][1][5]5a}{[1][15][]16}}
+\newlabel{fig:excitable_cv}{{5b}{16}{Conduction velocity.\relax }{figure.caption.21}{}}
+\newlabel{fig:excitable_cv@cref}{{[subfigure][2][5]5b}{[1][15][]16}}
+\newlabel{sub@fig:excitable_cv}{{b}{16}{Conduction velocity.\relax }{figure.caption.21}{}}
+\newlabel{sub@fig:excitable_cv@cref}{{[subfigure][2][5]5b}{[1][15][]16}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Quantitative excitable-media signatures, solver vs.\ FNO rollout. \textbf  {(a)} Peak post-stimulus voltage vs stimulus amplitude $A$: a sharp threshold ($A^\star \approx 0.7$) separates sub-threshold decay to rest ($u^\star \approx -1.2$) from full action-potential firing ($u \approx +1.8$), and both methods are identical on both branches and at the threshold. \textbf  {(b)} Traveling-pulse speed scales linearly with $\sqrt  {D_u}$ as demonstrated by excitable-media theory, and the FNO matches the solver perfectly.\relax }}{16}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:excitable_signatures}{{5}{16}{Quantitative excitable-media signatures, solver vs.\ FNO rollout. \textbf {(a)} Peak post-stimulus voltage vs stimulus amplitude $A$: a sharp threshold ($A^\star \approx 0.7$) separates sub-threshold decay to rest ($u^\star \approx -1.2$) from full action-potential firing ($u \approx +1.8$), and both methods are identical on both branches and at the threshold. \textbf {(b)} Traveling-pulse speed scales linearly with $\sqrt {D_u}$ as demonstrated by excitable-media theory, and the FNO matches the solver perfectly.\relax }{figure.caption.21}{}}
+\newlabel{fig:excitable_signatures@cref}{{[figure][5][]5}{[1][15][]16}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Traveling action potential, solver vs FNO rollout. Rows: activator $u$ (top), recovery $v$ (bottom). Columns: ground truth, FNO $100$-step rollout, absolute error. The propagating wavefront is reproduced over the full $T = 40$ horizon, and error is confined to the moving front.\relax }}{16}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:excitable_rollout}{{6}{16}{Traveling action potential, solver vs FNO rollout. Rows: activator $u$ (top), recovery $v$ (bottom). Columns: ground truth, FNO $100$-step rollout, absolute error. The propagating wavefront is reproduced over the full $T = 40$ horizon, and error is confined to the moving front.\relax }{figure.caption.22}{}}
+\newlabel{fig:excitable_rollout@cref}{{[figure][6][]6}{[1][15][]16}}
+\citation{patterson2022carbonfootprintmachinelearning}
+\citation{korkmaz2024artificial}
+\citation{ferrara2023fairness}
+\bibdata{references}
+\bibcite{2020PhRvR...2b3068B}{1}
+\bibcite{Ermentrout2010}{2}
+\bibcite{fabiani2025enabling}{3}
+\bibcite{ferrara2023fairness}{4}
+\bibcite{FitzHugh1961}{5}
+\bibcite{ghadjari2026fno}{6}
+\bibcite{grady2023modelparallel}{7}
+\bibcite{hao2024fourier}{8}
+\bibcite{Izhikevich2007}{9}
+\bibcite{kang2024adjoint}{10}
+\bibcite{Keener2009}{11}
+\bibcite{Kilgore2014}{12}
+\bibcite{korkmaz2024artificial}{13}
+\bibcite{kovachki2021neural}{14}
+\bibcite{LeVeque2007}{15}
+\bibcite{li2021fourierneuraloperatorparametric}{16}
+\bibcite{loshchilov2019decoupled}{17}
+\bibcite{lu2021learning}{18}
+\bibcite{Nagumo1962}{19}
+\bibcite{patterson2022carbonfootprintmachinelearning}{20}
+\bibcite{film2018}{21}
+\bibcite{Quarteroni2000}{22}
+\bibcite{Rinzel1998}{23}
+\bibcite{Terman1992}{24}
+\bibstyle{splncs04}
+\gdef \@abspage@last{19}
